@@ -1,0 +1,1 @@
+g++ main.cpp -lwinmm -static-libgcc -static-libstdc++
