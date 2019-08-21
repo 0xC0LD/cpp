@@ -1,11 +1,12 @@
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef MAIN_H
+#define MAIN_H
 
+#include <iostream>
+#include <fstream>
+#include <thread>
+#include <mutex>
 #include <windows.h>
-
-/*  To use this exported function of dll, include this header
- *  in your project.
- */
+#include <TlHelp32.h>
 
 #ifdef BUILD_DLL
     #define DLL_EXPORT __declspec(dllexport)
@@ -13,16 +14,4 @@
     #define DLL_EXPORT __declspec(dllimport)
 #endif
 
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-void DLL_EXPORT SomeFunction(const LPCSTR sometext);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // __MAIN_H__
+#endif // MAIN_H
