@@ -54,8 +54,11 @@ int main(int argc, char* argv[]){
 		else {
 			std::ofstream file(fullName);
 			file << "#include <iostream>"                           << std::endl;
-			file << "int main(int argc, char* argv[]){"             << std::endl;
+			file << ""                                              << std::endl;
+			file << "int main(int argc, char* argv[]) {"            << std::endl;
+			file << ""                                              << std::endl;
 			file << "	std::cout << \"HELLO WORLD\" << std::endl;" << std::endl;
+			file << ""                                              << std::endl;
 			file << "	return 0;"                                  << std::endl;
 			file << "}"                                             << std::endl;
 			file.close();
