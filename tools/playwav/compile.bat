@@ -1,1 +1,1 @@
-g++ main.cpp -lwinmm -static-libgcc -static-libstdc++
+g++ main.cpp -lwinmm -static-libgcc -static-libstdc++ -o playwav.exe

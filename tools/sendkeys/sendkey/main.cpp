@@ -1,5 +1,4 @@
-#include <iostream>
-#include <string>
+#include <stdio.h>
 #include <list>
 
 #include <windows.h>
@@ -179,34 +178,34 @@ void combo_ctrl_v() {
 	SendInput(1, &input, sizeof(INPUT));
 }
 
-std::string getSendkeyHelp() {
-	return std::string()
-		 + "  \\n - ENTER" + "\n"
-	     + "  \\b - BACKSPACE" + "\n"
-		 + "  \\e - ESCAPE" + "\n"
-		 + "  \\a - ALT" + "\n"
-		 + "  \\c - CTRL" + "\n"
-		 + "  \\w - WINDOWS" + "\n"
-		 + "  \\d - DEL" + "\n"
-		 + "\n"
-		 + "  \\t - ALT + F4" + "\n"
-		 + "  \\h - WIN + D" + "\n"
-		 + "  \\r - WIN + R" + "\n"
-		 + "\n"
-		 + "  \\1 - LMB" + "\n"
-		 + "  \\2 - MMB" + "\n"
-		 + "  \\3 - RMB" + "\n"
-		 + "\n"
-		 + "  \\v - CTRL + V" + "\n"
+const char* getSendkeyHelp() {
+	return 
+	"  \\n - ENTER\n"
+	"  \\b - BACKSPACE\n"
+	"  \\e - ESCAPE\n"
+	"  \\a - ALT\n"
+	"  \\c - CTRL\n"
+	"  \\w - WINDOWS\n"
+	"  \\d - DEL\n"
+	"\n"
+	"  \\t - ALT + F4\n"
+	"  \\h - WIN + D\n"
+	"  \\r - WIN + R\n"
+	"\n"
+	"  \\1 - LMB\n"
+	"  \\2 - MMB\n"
+	"  \\3 - RMB\n"
+	"\n"
+	"  \\v - CTRL + V\n"
 		 ;
 }
 
-int sendkey(std::string str) {
+int sendkey(const char* str) {
 	
 	std::list<int> keys;
 	
 	bool nextIsSpecial = false;
-	for (int i = 0; i < str.length(); i++) {
+	for (int i = 0; i < strlen(str); i++) {
 		
 		if (nextIsSpecial && str[i] == '\\') {
 			keys.push_back(str[i]);
@@ -390,12 +389,12 @@ int sendkey(std::string str) {
 int main(int argc, char* argv[]) {
 	
 	if (argc < 2) {
-		std::cerr << "USAGE: " << argv[0] << " <stringToSend>" << std::endl;
-		std::cerr << getSendkeyHelp() << std::endl;
+		fprintf(stderr, "USAGE: %s <stringToSend>\n", argv[0]);
+		fprintf(stderr, "%s\n", getSendkeyHelp());
 		return 1;
 	}
 	
-	sendkey(std::string(argv[1]));
+	sendkey(argv[1]);
 	
 	return 0;
 }

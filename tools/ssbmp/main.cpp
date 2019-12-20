@@ -1,22 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <wchar.h>
 #include <windows.h>
-#include <string>
-#include <sstream>
 #include <cassert>
 #include <gdiplus.h>
-#include <ctime>
-#include <stdio.h>
-#include <wchar.h>
-
-namespace std //patch to_string
-{
-    template < typename T > std::string to_string(const T& n)
-    {
-        std::ostringstream stm ;
-        stm << n ;
-        return stm.str() ;
-    }
-}
-#include <iostream>
+#include <time.h>
 
 using namespace Gdiplus;
 
@@ -151,9 +140,24 @@ bool ScreenCapture(int x, int y, int width, int height, const char* filename){
 
 int main(int argc, char* argv[]){
 	
-	std::string name;
-	if      (argc == 1) { name = std::to_string(time(0)) + ".bmp"; }
-	else if (argc == 2) { name = argv[1];                          }
+	char* fullname;
+	if (argc == 1) {
+		char buffer[16];
+		memset(buffer,'\0', sizeof(buffer));
+		itoa(time(0), buffer, 10);
+		
+		const char* name = buffer;
+		const char* ext = ".bmp";
+		
+		char f[sizeof(name) + sizeof(ext) + 2];
+		strcat(f, name);
+		strcat(f, ext);
+		fullname = &f[0];
+	}
+	else {
+		fullname = argv[1];
+	}
+	
 	
 	// Initialize GDI+.
 	GdiplusStartupInput gdiplusStartupInput;
@@ -164,12 +168,12 @@ int main(int argc, char* argv[]){
 	int y1 = 0;
 	int x2 = GetSystemMetrics(SM_CXSCREEN);
 	int y2 = GetSystemMetrics(SM_CYSCREEN);
-	ScreenCapture(x1, y1, x2 - x1, y2 - y1, name.c_str());
+	ScreenCapture(x1, y1, x2 - x1, y2 - y1, fullname);
 	
 	//Shutdown GDI+
 	GdiplusShutdown(gdiplusToken);
 	
-	std::cout << "Screenshot saved as: " << name << std::endl;
+	printf("Screenshot saved as: %s\n", fullname);
 	
     return 0;
 }

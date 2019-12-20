@@ -1,5 +1,4 @@
-#include <iostream>
-#include <string>
+#include <stdio.h>
 #include <list>
 #include <thread>
 
@@ -180,34 +179,34 @@ void combo_ctrl_v() {
 	SendInput(1, &input, sizeof(INPUT));
 }
 
-std::string getSendkeyHelp() {
-	return std::string()
-		 + "  \\n - ENTER" + "\n"
-	     + "  \\b - BACKSPACE" + "\n"
-		 + "  \\e - ESCAPE" + "\n"
-		 + "  \\a - ALT" + "\n"
-		 + "  \\c - CTRL" + "\n"
-		 + "  \\w - WINDOWS" + "\n"
-		 + "  \\d - DEL" + "\n"
-		 + "\n"
-		 + "  \\t - ALT + F4" + "\n"
-		 + "  \\h - WIN + D" + "\n"
-		 + "  \\r - WIN + R" + "\n"
-		 + "\n"
-		 + "  \\1 - LMB" + "\n"
-		 + "  \\2 - MMB" + "\n"
-		 + "  \\3 - RMB" + "\n"
-		 + "\n"
-		 + "  \\v - CTRL + V" + "\n"
+const char* getSendkeyHelp() {
+	return 
+	"  \\n - ENTER\n"
+	"  \\b - BACKSPACE\n"
+	"  \\e - ESCAPE\n"
+	"  \\a - ALT\n"
+	"  \\c - CTRL\n"
+	"  \\w - WINDOWS\n"
+	"  \\d - DEL\n"
+	"\n"
+	"  \\t - ALT + F4\n"
+	"  \\h - WIN + D\n"
+	"  \\r - WIN + R\n"
+	"\n"
+	"  \\1 - LMB\n"
+	"  \\2 - MMB\n"
+	"  \\3 - RMB\n"
+	"\n"
+	"  \\v - CTRL + V\n"
 		 ;
 }
 
-int sendkey(std::string str) {
+int sendkey(const char* str) {
 	
 	std::list<int> keys;
 	
 	bool nextIsSpecial = false;
-	for (int i = 0; i < str.length(); i++) {
+	for (int i = 0; i < strlen(str); i++) {
 		
 		if (nextIsSpecial && str[i] == '\\') {
 			keys.push_back(str[i]);
@@ -395,7 +394,7 @@ void endSpam() {
 		Sleep(50);
 		
 		if (GetAsyncKeyState(VK_END) != 0) {
-			std::cout << "# '[END] pressed exiting..." << std::endl;
+			printf("# [END] pressed, exiting...\n");
 			g_Exit = true;
 			break;
 		}
@@ -407,8 +406,8 @@ void endSpam() {
 int main(int argc, char* argv[]) {
 	
 	if (argc < 2) {
-		std::cerr << "USAGE: " << argv[0] << " <stringToSend>" << std::endl;
-		std::cerr << getSendkeyHelp() << std::endl;
+		fprintf(stderr, "USAGE: %s <stringToSend>\n", argv[0]);
+		fprintf(stderr, "%s\n", getSendkeyHelp());
 		return 1;
 	}
 	
@@ -416,21 +415,17 @@ int main(int argc, char* argv[]) {
 	std::thread t1(endSpam);
 	t1.detach();
 	
-	std::cout << "# press the [END] key on your keyboard to stop the spam..."  << std::endl;
-	std::cout << "# starting spam in 3..." << std::endl; Sleep(1000);
-	std::cout << "# starting spam in 2..." << std::endl; Sleep(1000);
-	std::cout << "# starting spam in 1..." << std::endl; Sleep(1000);
-	
-	std::string str = std::string(argv[1]);
+	printf("# press the [END] key on your keyboard to stop the spam...\n");
+	printf("# starting spam in 3...\n"); Sleep(1000);
+	printf("# starting spam in 2...\n"); Sleep(1000);
+	printf("# starting spam in 1...\n"); Sleep(1000);
 	
 	while (!g_Exit) {
-		sendkey(str);
+		sendkey(argv[1]);
 	}
 	
 	return 0;
 }
-
-
 
 
 

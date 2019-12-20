@@ -20,9 +20,6 @@ DWORD WINAPI HackThread(HMODULE hModule) {
 	return 0;
 }
 
-
-
-
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID lpReserved) {
 
 	if (fdwReason == DLL_PROCESS_ATTACH) {

@@ -1,9 +1,9 @@
-#include <iostream>
+#include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char** argv) {
 	
-	if (argc == 1) { std::cerr << "USAGE: " << argv[0] << " <number>" << std::endl; return 1; }
+	if (argc == 1) { fprintf(stderr, "USAGE: %s <number>\n", argv[0]); return 1; }
 	
 	long long int n, t1 = 0, t2 = 1, nextTerm = 0;
 	
@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 		nextTerm = t1 + t2;
 		t1 = t2;
 		t2 = nextTerm;
-		std::cout << nextTerm << std::endl;
+		printf("%lli\n", nextTerm);
 	}
 	
 	return 0;

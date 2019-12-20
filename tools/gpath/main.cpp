@@ -1,20 +1,17 @@
-#include <iostream>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main() {
 	
-	std::string str = getenv("PATH");
-	std::string split;
-	
-	for (char& c : str) {
-		if (c == ';') {
-			std::cout << split << std::endl;
-			split = "";
-		}
-		else {
-			split = split + c;
+	char* str = getenv("PATH");
+	for (int i = 0; i < strlen(str); i++) {
+		if (str[i] == ';') {
+			str[i] = '\n';
 		}
 	}
+	
+	printf(str);
 	
 	return 0;
 }

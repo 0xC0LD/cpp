@@ -1,30 +1,16 @@
-#include <iostream>
+#include <stdio.h>
 #include <windows.h>
-#include <windows.h>
-#include <string>
-
-using namespace std;
 
 int main(int argc, char* argv[]){
-	//=====================================
-	//			PLAY WAV FILES
-	//=====================================
-	// SND_ASYNC     = play in the background
-	// SND_FILENAME  = play then continue code
-	// PlaySound(TEXT("boop.mp3"), NULL, SND_FILENAME);
+	// SND_ASYNC     - play in the background
+	// SND_FILENAME  - play and pause
 	
-	if (argc == 1){
-		cout << argv[0] << " <WavSoundFile>" << endl;
+	if (argc == 1) {
+		fprintf(stderr, "USAGE: %s <WavSoundFile>", argv[0]);
 		return 0;
 	}
 	
-	string FILE = argv[1];
-	
-	if (FILE.find(".wav") != std::string::npos) {
-		PlaySound(TEXT(argv[1]), NULL, SND_FILENAME);
-	}else{
-		cout << "Only .wav files supported." << endl;
-	}
+	PlaySound(argv[1], NULL, SND_FILENAME);
 	
     return 0;
 }

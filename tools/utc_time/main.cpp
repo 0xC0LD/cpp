@@ -1,7 +1,7 @@
-#include <iostream>
+#include <stdio.h>
 #include <time.h>
 
-int main(){
-	std::cout << time(0) << std::endl;
+int main() {
+	printf("%d\n", time(0));
 	return 0;
 }
