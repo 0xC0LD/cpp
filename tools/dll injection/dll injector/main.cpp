@@ -4,66 +4,17 @@
 #include <tlhelp32.h>
 #include <windows.h>
 
-int main(int argc, char* argv[]) {
-	
-	if (argc != 3) {
-		fprintf(stderr, "USAGE: %s <process name | id> <dll>\n", argv[0]);
-		return 1;
-	}
-	
-	DWORD pID = NULL;
-	const char* input = argv[1];
-	
-	// check if input is number (id) or process name
-	bool isID = true;
-	for (int i = 0; i < sizeof(input); i++) {
-		if (!isdigit(input[i])) {
-			isID = false;
-		}
-	}
-	
-	if (isID) {
-		pID = atoi(input);
-		printf("using id: %lu\n", pID);
-	}
-	else {
-		// retrieve process ID
-		HANDLE thSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-		if (thSnapShot == INVALID_HANDLE_VALUE) { fprintf(stderr, "error: unable to create toolhelp snapshot\n"); return false; } 
-	
-		PROCESSENTRY32 pe;
-		pe.dwSize = sizeof(PROCESSENTRY32);
-		
-		printf("searching for process: \"%s\"\n", input);
-		
-		// go through processes and match the name
-		BOOL retval = Process32First(thSnapShot, &pe);
-		while (retval) {
-			if (StrStrI(pe.szExeFile, input)) { printf("found process id: %lu (%s)\n", pe.th32ProcessID, pe.szExeFile); pID = pe.th32ProcessID; }
-			retval = Process32Next(thSnapShot, &pe);
-		}
-		
-		if (pID == NULL) {
-			fprintf(stderr, "error: process with name: \"%s\" not found\n", input);
-			return 1;
-		}
-	}
-	
+int injectDll(DWORD pID, const char* dllPath) {
 	
 	// get the dll's full path name
 	char buf[MAX_PATH] = {0};
-	GetFullPathName(argv[2], MAX_PATH, buf, NULL);
+	GetFullPathName(dllPath, MAX_PATH, buf, NULL);
 	printf("using dll: \"%s\"\n", buf);
-	
-	
 	printf("injecting dll...\n");
-	
-	char buf2[50] = {0};
 	
 	HANDLE Proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pID);
 	if (!Proc) {
-		sprintf(buf2, "error: OpenProcess() failed: %d\n", GetLastError());
-		printf(buf2);
+		printf("error: OpenProcess() failed: %d\n", GetLastError());
 		return 1;
 	} 
 	
@@ -81,6 +32,59 @@ int main(int argc, char* argv[]) {
 	printf("dll injected\n");
 	
 	CloseHandle(Proc);
+	
+	return 0;
+}
+
+int main(int argc, char* argv[]) {
+	
+	if (argc != 3) {
+		fprintf(stderr, "USAGE: %s <process name | id> <dll>\n", argv[0]);
+		return 1;
+	}
+	
+	DWORD pID = NULL;
+	const char* filename = "";
+	const char* input = argv[1];
+	
+	// check if input is number (id) or process name
+	bool isID = true;
+	for (int i = 0; i < sizeof(input); i++) {
+		if (!isdigit(input[i])) { isID = false; }
+	}
+	
+	if (isID) {
+		pID = atoi(input);
+		printf("using id: %lu\n", pID);
+		injectDll(pID, argv[2]);
+	}
+	else {
+		// retrieve process ID
+		HANDLE thSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+		if (thSnapShot == INVALID_HANDLE_VALUE) { fprintf(stderr, "error: unable to create toolhelp snapshot\n"); return false; } 
+	
+		PROCESSENTRY32 pe;
+		pe.dwSize = sizeof(PROCESSENTRY32);
+		
+		printf("searching for process: \"%s\"\n", input);
+		
+		// go through processes and match the name
+		BOOL retval = Process32First(thSnapShot, &pe);
+		while (retval) {
+			if (StrStrI(pe.szExeFile, input)) {
+				printf("found process id: %lu (%s)\n", pe.th32ProcessID, pe.szExeFile);
+				pID = pe.th32ProcessID;
+				injectDll(pID, argv[2]);
+			}
+			retval = Process32Next(thSnapShot, &pe);
+		}
+		
+		if (pID == NULL) {
+			fprintf(stderr, "error: process with name: \"%s\" not found\n", input);
+			return 1;
+		}
+	}
+	
 	return 0; 
 } 
 
