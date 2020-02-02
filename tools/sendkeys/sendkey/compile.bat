@@ -1,1 +1,1 @@
-g++ main.cpp -static-libgcc -static-libstdc++ -o sendkey.exe
+g++ -Wall -static main.cpp -o sendkey.exe

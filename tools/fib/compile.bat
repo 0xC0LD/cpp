@@ -1,1 +1,1 @@
-g++ main.cpp -static-libgcc -static-libstdc++ -o fib.exe
+g++ -Wall -static main.cpp -o fib.exe

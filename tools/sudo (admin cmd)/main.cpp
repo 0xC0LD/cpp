@@ -9,8 +9,6 @@ int main(int argc, char* argv[]) {
 	// change dir to system dir
 	//chdir("C:\\Windows\\System32");
 	
-	bool exit = false;
-	
 	for (int i = 1; i < argc; i++) {
 		
 		//run args as a command

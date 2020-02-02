@@ -79,7 +79,7 @@ const char* CaptureKeyPress(const int& key, const bool& clean) {
 		case VK_SHIFT:  { return "[SHIFT]";  break; }
 		case VK_LSHIFT: { return "[LSHIFT]"; break; }
 		case VK_RSHIFT: { return "[RSHIFT]"; break; }
-		/**/
+		*/
 		
 	    case VK_LCONTROL: { return "[LCTRL]"; break; }
 		case VK_RCONTROL: { return "[RCTRL]"; break; }

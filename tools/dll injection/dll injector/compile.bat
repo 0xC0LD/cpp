@@ -1,1 +1,1 @@
-g++ -Wfatal-errors main.cpp -static-libgcc -static-libstdc++ -o ldll.exe
+g++ -Wall -static main.cpp -o ldll.exe

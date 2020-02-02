@@ -1,1 +1,1 @@
-g++ main.cpp -lgdi32 -lgdiplus -static-libgcc -static-libstdc++ -o ssbmp.exe
+g++ -Wall -static main.cpp -lgdi32 -lgdiplus -o ssbmp.exe

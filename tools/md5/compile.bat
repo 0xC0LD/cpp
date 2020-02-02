@@ -1,1 +1,1 @@
-g++ main.cpp md5.cpp -static-libgcc -static-libstdc++ -o md5.exe
+g++ -Wall -static main.cpp md5.cpp -o md5.exe

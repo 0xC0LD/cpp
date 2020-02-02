@@ -14,7 +14,7 @@ int injectDll(DWORD pID, const char* dllPath) {
 	
 	HANDLE Proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pID);
 	if (!Proc) {
-		printf("error: OpenProcess() failed: %d\n", GetLastError());
+		printf("error: OpenProcess() failed: %lu\n", GetLastError());
 		return 1;
 	} 
 	
@@ -44,12 +44,11 @@ int main(int argc, char* argv[]) {
 	}
 	
 	DWORD pID = NULL;
-	const char* filename = "";
 	const char* input = argv[1];
 	
 	// check if input is number (id) or process name
 	bool isID = true;
-	for (int i = 0; i < sizeof(input); i++) {
+	for (unsigned int i = 0; i < sizeof(input); i++) {
 		if (!isdigit(input[i])) { isID = false; }
 	}
 	

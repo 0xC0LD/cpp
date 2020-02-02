@@ -23,8 +23,8 @@ int main(int argc, char* argv[]){
 	LPVOID address = INT2VOIDP(address_);
 	int newValue = atoi(argv[3]);
 	
-	printf("PID = %ul\n", pid);
-	printf("adr = %d - %d\n", address_, address);
+	printf("PID = %lud\n", pid);
+	printf("adr = %d - %d\n", address_, (int)address);
 	printf("val = %d\n", newValue);
 	
 	if (IsProcessRunning(pid)) { printf("# process found\n");                        }

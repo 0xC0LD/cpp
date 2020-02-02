@@ -1,1 +1,1 @@
-g++ -static main.cpp -o utc.exe
+g++ -Wall -static main.cpp -o utc.exe

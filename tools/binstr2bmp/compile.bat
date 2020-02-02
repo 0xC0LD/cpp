@@ -1,1 +1,1 @@
-g++ main.cpp -static-libgcc -static-libstdc++ -o binstr2bmp.exe
+g++ -Wall -static main.cpp -o binstr2bmp.exe

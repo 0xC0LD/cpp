@@ -205,7 +205,7 @@ int sendkey(const char* str) {
 	std::list<int> keys;
 	
 	bool nextIsSpecial = false;
-	for (int i = 0; i < strlen(str); i++) {
+	for (unsigned int i = 0; i < strlen(str); i++) {
 		
 		if (nextIsSpecial && str[i] == '\\') {
 			keys.push_back(str[i]);

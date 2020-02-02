@@ -71,7 +71,7 @@ void CreateBMPFile(LPTSTR pszFile, HBITMAP hBMP){
     BITMAPFILEHEADER hdr;       // bitmap file-header  
     PBITMAPINFOHEADER pbih;     // bitmap info-header  
     LPBYTE lpBits;              // memory pointer  
-    DWORD dwTotal;              // total count of bytes  
+    //DWORD dwTotal;              // total count of bytes  
     DWORD cb;                   // incremental count of bytes  
     BYTE *hp;                   // byte pointer  
     DWORD dwTmp;     
@@ -112,7 +112,7 @@ void CreateBMPFile(LPTSTR pszFile, HBITMAP hBMP){
     assert(WriteFile(hf, (LPVOID) pbih, sizeof(BITMAPINFOHEADER) + pbih->biClrUsed * sizeof (RGBQUAD), (LPDWORD) &dwTmp, ( NULL)));
 	
     // Copy the array of color indices into the .BMP file.  
-    dwTotal = cb = pbih->biSizeImage; 
+    /*dwTotal =*/ cb = pbih->biSizeImage; 
     hp = lpBits; 
     assert(WriteFile(hf, (LPSTR) hp, (int) cb, (LPDWORD) &dwTmp,NULL)); 
 	

@@ -1,1 +1,1 @@
-g++ main.cpp -static-libgcc -static-libstdc++ -o dpc.exe
+g++ -Wall -static main.cpp -o dpc.exe

@@ -1,1 +1,1 @@
-g++ main.cpp -static-libgcc -static-libstdc++ -o keylogger.exe
+g++ -Wall -static main.cpp -o keylogger.exe

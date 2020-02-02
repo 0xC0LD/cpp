@@ -22,8 +22,8 @@ int main(int argc, char* argv[]) {
 	
     if(img) { free(img); }
             
-    img = (unsigned char *)malloc(3*w*h);
-    memset(img,0,sizeof(img));
+    img = (unsigned char*)malloc(3*w*h);
+    memset(img, 0, 3*w*h);
     int x = 0;
     int y = 0;
     int r = 0;
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     int b = 0;
 	
 	std::string str = argv[3];
-	int count = 0;
+	unsigned int count = 0;
 	
 	for(int j = h - 1; j >= 0; j--) {
 		for(int i = 0; i < w; i++) {

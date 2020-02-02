@@ -1,1 +1,1 @@
-g++ main.cpp -static-libgcc -static-libstdc++ -o clipboard.exe
+g++ -Wall -static main.cpp -o clipboard.exe

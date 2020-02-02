@@ -1,1 +1,1 @@
-g++ main.cpp -static-libgcc -static-libstdc++ -o spamkey.exe
+g++ -Wall -static main.cpp -o spamkey.exe

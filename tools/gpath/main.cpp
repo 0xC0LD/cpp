@@ -5,13 +5,13 @@
 int main() {
 	
 	char* str = getenv("PATH");
-	for (int i = 0; i < strlen(str); i++) {
+	for (unsigned int i = 0; i < strlen(str); i++) {
 		if (str[i] == ';') {
 			str[i] = '\n';
 		}
 	}
 	
-	printf(str);
+	printf("%s\n", str);
 	
 	return 0;
 }
