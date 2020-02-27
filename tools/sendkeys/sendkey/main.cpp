@@ -1,26 +1,65 @@
-#include <stdio.h>
+#include <iostream>
 #include <list>
-
 #include <windows.h>
 #include "vk.h"
 
-void send_vk_keyboard(WORD vkey, bool holdShift = false) {
+enum KB{
+	NORMAL = 0x00,
+	SHIFT  = 0x01,
+	CTRL   = 0x02,
+	WIN    = 0x04,
+	ALT    = 0x08,
+};
+
+void send_vk_keyboard(WORD vkey, KB flags = NORMAL) {
 	
 	// SHIFT
-	INPUT shift;
+	INPUT shift; ZeroMemory(&shift, sizeof(shift));
+	INPUT ctrl;  ZeroMemory(&ctrl,  sizeof(ctrl));
+	INPUT alt;   ZeroMemory(&alt,   sizeof(alt));
+	INPUT win;   ZeroMemory(&win,   sizeof(win));
 	
-	if (holdShift) {
+	if (flags & SHIFT) {
 		shift.type = INPUT_KEYBOARD;
 		shift.ki.wScan = MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
 		shift.ki.time = 0;
 		shift.ki.dwExtraInfo = 0;
 		shift.ki.wVk = VK_LSHIFT;
-	
 		shift.ki.dwFlags = 0; // KEYEVENTF_KEYDOWN existn't
 		SendInput(1, &shift, sizeof(INPUT));
 	}
 	
-	INPUT input; 
+	if (flags & CTRL) {
+		ctrl.type = INPUT_KEYBOARD;
+		ctrl.ki.wScan = MapVirtualKey(VK_LCONTROL, MAPVK_VK_TO_VSC);
+		ctrl.ki.time = 0;
+		ctrl.ki.dwExtraInfo = 0;
+		ctrl.ki.wVk = VK_LCONTROL;
+		ctrl.ki.dwFlags = 0; // KEYEVENTF_KEYDOWN existn't
+		SendInput(1, &ctrl, sizeof(INPUT));
+	}
+	
+	if (flags & ALT) {
+		alt.type = INPUT_KEYBOARD;
+		alt.ki.wScan = MapVirtualKey(VK_LMENU, MAPVK_VK_TO_VSC);
+		alt.ki.time = 0;
+		alt.ki.dwExtraInfo = 0;
+		alt.ki.wVk = VK_LMENU;
+		alt.ki.dwFlags = 0; // KEYEVENTF_KEYDOWN existn't
+		SendInput(1, &alt, sizeof(INPUT));
+	}
+	
+	if (flags & WIN) {
+		win.type = INPUT_KEYBOARD;
+		win.ki.wScan = MapVirtualKey(VK_LWIN, MAPVK_VK_TO_VSC);
+		win.ki.time = 0;
+		win.ki.dwExtraInfo = 0;
+		win.ki.wVk = VK_LWIN;
+		win.ki.dwFlags = 0; // KEYEVENTF_KEYDOWN existn't
+		SendInput(1, &win, sizeof(INPUT));
+	}
+	
+	INPUT input; ZeroMemory(&input, sizeof(input));
 	input.type = INPUT_KEYBOARD;
 	input.ki.wScan = MapVirtualKey(vkey, MAPVK_VK_TO_VSC);
 	input.ki.time = 0;
@@ -32,16 +71,29 @@ void send_vk_keyboard(WORD vkey, bool holdShift = false) {
 	input.ki.dwFlags = KEYEVENTF_KEYUP;
 	SendInput(1, &input, sizeof(INPUT));
 	
-	if (holdShift) {
+	if (flags & SHIFT) {
 		shift.ki.dwFlags = KEYEVENTF_KEYUP;
 		SendInput(1, &shift, sizeof(INPUT));
+	}
+	
+	if (flags & CTRL) {
+		ctrl.ki.dwFlags = KEYEVENTF_KEYUP;
+		SendInput(1, &ctrl, sizeof(INPUT));
+	}
+	
+	if (flags & ALT) {
+		alt.ki.dwFlags = KEYEVENTF_KEYUP;
+		SendInput(1, &alt, sizeof(INPUT));
+	}
+	
+	if (flags & WIN) {
+		win.ki.dwFlags = KEYEVENTF_KEYUP;
+		SendInput(1, &win, sizeof(INPUT));
 	}
 }
 
 void send_vk_mouse(WORD vkey) {
-	
-	INPUT input;
-	
+	INPUT input; ZeroMemory(&input, sizeof(input));
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
 	SendInput(1, &input, sizeof(INPUT)); // send left key down
@@ -49,137 +101,8 @@ void send_vk_mouse(WORD vkey) {
 	SendInput(1, &input, sizeof(INPUT)); // send left key up
 }
 
-//WINDOWS KEY + D = SHOW DESKTOP
-void combo_win_d() {
-
-	//91 = VK_LWIN
-	//68 = VK_KEY_D
-	WORD input_word = VK_LWIN;
-	INPUT input; 
-	input.type = INPUT_KEYBOARD;
-	input.ki.wScan = MapVirtualKey(input_word, MAPVK_VK_TO_VSC);
-	input.ki.time = 0;
-	input.ki.dwExtraInfo = 0;
-	input.ki.wVk = input_word;
-	
-	WORD input_word2 = VK_KEY_D;
-	INPUT input2; 
-	input2.type = INPUT_KEYBOARD;
-	input2.ki.wScan = MapVirtualKey(input_word2, MAPVK_VK_TO_VSC);
-	input2.ki.time = 0;
-	input2.ki.dwExtraInfo = 0;
-	input2.ki.wVk = input_word2;
-	
-	input.ki.dwFlags = 0;
-	SendInput(1, &input, sizeof(INPUT));
-	
-	input2.ki.dwFlags = 0;
-	SendInput(1, &input2, sizeof(INPUT));
-	input2.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input2, sizeof(INPUT));
-	
-	input.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input, sizeof(INPUT));
-	
-}
-//WINDOWS KEY + R = RUNBOX
-void combo_win_r() {
-	
-	//91 = VK_LWIN
-	//76 = VK_KEY_L
-	WORD input_word = VK_LWIN;
-	INPUT input; 
-	input.type = INPUT_KEYBOARD;
-	input.ki.wScan = MapVirtualKey(input_word, MAPVK_VK_TO_VSC);
-	input.ki.time = 0;
-	input.ki.dwExtraInfo = 0;
-	input.ki.wVk = input_word;
-	
-	WORD input_word2 = VK_KEY_R;
-	INPUT input2; 
-	input2.type = INPUT_KEYBOARD;
-	input2.ki.wScan = MapVirtualKey(input_word2, MAPVK_VK_TO_VSC);
-	input2.ki.time = 0;
-	input2.ki.dwExtraInfo = 0;
-	input2.ki.wVk = input_word2;
-	
-	input.ki.dwFlags = 0;
-	SendInput(1, &input, sizeof(INPUT));
-	
-	input2.ki.dwFlags = 0;
-	SendInput(1, &input2, sizeof(INPUT));
-	input2.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input2, sizeof(INPUT));
-	
-	input.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input, sizeof(INPUT));
-	
-}
-//ALT + F4 = CLOSE TAB
-void combo_alt_f4() {
-	
-	//18  = VK_MENU (ALT)
-	//115 = VK_F4
-	WORD input_word = VK_MENU;
-	INPUT input; 
-	input.type = INPUT_KEYBOARD;
-	input.ki.wScan = MapVirtualKey(input_word, MAPVK_VK_TO_VSC);
-	input.ki.time = 0;
-	input.ki.dwExtraInfo = 0;
-	input.ki.wVk = input_word;
-	
-	WORD input_word2 = VK_F4;
-	INPUT input2; 
-	input2.type = INPUT_KEYBOARD;
-	input2.ki.wScan = MapVirtualKey(input_word2, MAPVK_VK_TO_VSC);
-	input2.ki.time = 0;
-	input2.ki.dwExtraInfo = 0;
-	input2.ki.wVk = input_word2;
-	
-	input.ki.dwFlags = 0;
-	SendInput(1, &input, sizeof(INPUT));
-	
-	input2.ki.dwFlags = 0;
-	SendInput(1, &input2, sizeof(INPUT));
-	input2.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input2, sizeof(INPUT));
-	
-	input.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input, sizeof(INPUT));
-}
-//CTRL + V = PASTE
-void combo_ctrl_v() {
-	
-	WORD input_word = VK_CONTROL;
-	INPUT input; 
-	input.type = INPUT_KEYBOARD;
-	input.ki.wScan = MapVirtualKey(input_word, MAPVK_VK_TO_VSC);
-	input.ki.time = 0;
-	input.ki.dwExtraInfo = 0;
-	input.ki.wVk = input_word;
-	
-	WORD input_word2 = VK_KEY_V;
-	INPUT input2; 
-	input2.type = INPUT_KEYBOARD;
-	input2.ki.wScan = MapVirtualKey(input_word2, MAPVK_VK_TO_VSC);
-	input2.ki.time = 0;
-	input2.ki.dwExtraInfo = 0;
-	input2.ki.wVk = input_word2;
-	
-	input.ki.dwFlags = 0;
-	SendInput(1, &input, sizeof(INPUT));
-	
-	input2.ki.dwFlags = 0;
-	SendInput(1, &input2, sizeof(INPUT));
-	input2.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input2, sizeof(INPUT));
-	
-	input.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input, sizeof(INPUT));
-}
-
 const char* getSendkeyHelp() {
-	return 
+	return
 	"  \\n - ENTER\n"
 	"  \\b - BACKSPACE\n"
 	"  \\e - ESCAPE\n"
@@ -197,21 +120,15 @@ const char* getSendkeyHelp() {
 	"  \\3 - RMB\n"
 	"\n"
 	"  \\v - CTRL + V\n"
-		 ;
+	;
 }
 
-int sendkey(const char* str) {
+int sendkey(std::string str) {
 	
 	std::list<int> keys;
 	
 	bool nextIsSpecial = false;
-	for (unsigned int i = 0; i < strlen(str); i++) {
-		
-		if (nextIsSpecial && str[i] == '\\') {
-			keys.push_back(str[i]);
-			nextIsSpecial = false;
-			continue;
-		}
+	for (unsigned int i = 0; i < str.length(); i++) {
 		
 		if (str[i] == '\\') {
 			nextIsSpecial = true;
@@ -220,27 +137,29 @@ int sendkey(const char* str) {
 		
 		if (nextIsSpecial) {
 			switch(str[i]) {
+				case '\\': keys.push_back(str[i]); break;
 				
 				// special keyboard
 				case 'n': keys.push_back(300); break; // enter
 				case 'b': keys.push_back(301); break; // backspace
 				case 'e': keys.push_back(302); break; // escape
-				case 'a': keys.push_back(303); break; // alt
-				case 'c': keys.push_back(304); break; // ctrl
-				case 'w': keys.push_back(305); break; // windows / mod
-				case 'd': keys.push_back(306); break; // delete
+				case 'a': keys.push_back(303); break; // ALT
+				case 'w': keys.push_back(304); break; // WIN / MOD
+				case 'd': keys.push_back(305); break; // DEL
 				
 				// keyboard combos
-				case 't': keys.push_back(400); break; // alt + F4
-				case 'h': keys.push_back(401); break; // show desktop hide all
-				case 'r': keys.push_back(402); break; // run box
+				case 't': keys.push_back(400); break; // ALT + F4
+				case 'h': keys.push_back(401); break; // WIN + D / show desktop / hide all windows
+				case 'r': keys.push_back(402); break; // WIN + R / run box
 				
 				// mouse buttons
 				case '1': keys.push_back(500); break; // LMB
 				case '2': keys.push_back(501); break; // MMB
 				case '3': keys.push_back(502); break; // RMB
 				
-				case 'v': keys.push_back(600); break; // CTRL + V
+				case 's': keys.push_back(600); break; // CTRL + A
+				case 'c': keys.push_back(601); break; // CTRL + C
+				case 'v': keys.push_back(602); break; // CTRL + V
 			}
 			nextIsSpecial = false;
 			continue;
@@ -282,32 +201,32 @@ int sendkey(const char* str) {
 			case 'y': send_vk_keyboard(VK_KEY_Y); break;
 			case 'z': send_vk_keyboard(VK_KEY_Z); break;
 			
-			case 'A': send_vk_keyboard(VK_KEY_A, true); break;
-			case 'B': send_vk_keyboard(VK_KEY_B, true); break;
-			case 'C': send_vk_keyboard(VK_KEY_C, true); break;
-			case 'D': send_vk_keyboard(VK_KEY_D, true); break;
-			case 'E': send_vk_keyboard(VK_KEY_E, true); break;
-			case 'F': send_vk_keyboard(VK_KEY_F, true); break;
-			case 'G': send_vk_keyboard(VK_KEY_G, true); break;
-			case 'H': send_vk_keyboard(VK_KEY_H, true); break;
-			case 'I': send_vk_keyboard(VK_KEY_I, true); break;
-			case 'J': send_vk_keyboard(VK_KEY_J, true); break;
-			case 'K': send_vk_keyboard(VK_KEY_K, true); break;
-			case 'L': send_vk_keyboard(VK_KEY_L, true); break;
-			case 'M': send_vk_keyboard(VK_KEY_M, true); break;
-			case 'N': send_vk_keyboard(VK_KEY_N, true); break;
-			case 'O': send_vk_keyboard(VK_KEY_O, true); break;
-			case 'P': send_vk_keyboard(VK_KEY_P, true); break;
-			case 'Q': send_vk_keyboard(VK_KEY_Q, true); break;
-			case 'R': send_vk_keyboard(VK_KEY_R, true); break;
-			case 'S': send_vk_keyboard(VK_KEY_S, true); break;
-			case 'T': send_vk_keyboard(VK_KEY_T, true); break;
-			case 'U': send_vk_keyboard(VK_KEY_U, true); break;
-			case 'V': send_vk_keyboard(VK_KEY_V, true); break;
-			case 'W': send_vk_keyboard(VK_KEY_W, true); break;
-			case 'X': send_vk_keyboard(VK_KEY_X, true); break;
-			case 'Y': send_vk_keyboard(VK_KEY_Y, true); break;
-			case 'Z': send_vk_keyboard(VK_KEY_Z, true); break;
+			case 'A': send_vk_keyboard(VK_KEY_A, SHIFT); break;
+			case 'B': send_vk_keyboard(VK_KEY_B, SHIFT); break;
+			case 'C': send_vk_keyboard(VK_KEY_C, SHIFT); break;
+			case 'D': send_vk_keyboard(VK_KEY_D, SHIFT); break;
+			case 'E': send_vk_keyboard(VK_KEY_E, SHIFT); break;
+			case 'F': send_vk_keyboard(VK_KEY_F, SHIFT); break;
+			case 'G': send_vk_keyboard(VK_KEY_G, SHIFT); break;
+			case 'H': send_vk_keyboard(VK_KEY_H, SHIFT); break;
+			case 'I': send_vk_keyboard(VK_KEY_I, SHIFT); break;
+			case 'J': send_vk_keyboard(VK_KEY_J, SHIFT); break;
+			case 'K': send_vk_keyboard(VK_KEY_K, SHIFT); break;
+			case 'L': send_vk_keyboard(VK_KEY_L, SHIFT); break;
+			case 'M': send_vk_keyboard(VK_KEY_M, SHIFT); break;
+			case 'N': send_vk_keyboard(VK_KEY_N, SHIFT); break;
+			case 'O': send_vk_keyboard(VK_KEY_O, SHIFT); break;
+			case 'P': send_vk_keyboard(VK_KEY_P, SHIFT); break;
+			case 'Q': send_vk_keyboard(VK_KEY_Q, SHIFT); break;
+			case 'R': send_vk_keyboard(VK_KEY_R, SHIFT); break;
+			case 'S': send_vk_keyboard(VK_KEY_S, SHIFT); break;
+			case 'T': send_vk_keyboard(VK_KEY_T, SHIFT); break;
+			case 'U': send_vk_keyboard(VK_KEY_U, SHIFT); break;
+			case 'V': send_vk_keyboard(VK_KEY_V, SHIFT); break;
+			case 'W': send_vk_keyboard(VK_KEY_W, SHIFT); break;
+			case 'X': send_vk_keyboard(VK_KEY_X, SHIFT); break;
+			case 'Y': send_vk_keyboard(VK_KEY_Y, SHIFT); break;
+			case 'Z': send_vk_keyboard(VK_KEY_Z, SHIFT); break;
 			
 			case '0': send_vk_keyboard(VK_KEY_0); break;
 			case '1': send_vk_keyboard(VK_KEY_1); break;
@@ -320,16 +239,16 @@ int sendkey(const char* str) {
 			case '8': send_vk_keyboard(VK_KEY_8); break;
 			case '9': send_vk_keyboard(VK_KEY_9); break;
 			
-			case ')': send_vk_keyboard(VK_KEY_0, true); break;
-			case '!': send_vk_keyboard(VK_KEY_1, true); break;
-			case '@': send_vk_keyboard(VK_KEY_2, true); break;
-			case '#': send_vk_keyboard(VK_KEY_3, true); break;
-			case '$': send_vk_keyboard(VK_KEY_4, true); break;
-			case '%': send_vk_keyboard(VK_KEY_5, true); break;
-			case '^': send_vk_keyboard(VK_KEY_6, true); break;
-			case '&': send_vk_keyboard(VK_KEY_7, true); break;
-			case '*': send_vk_keyboard(VK_KEY_8, true); break;
-			case '(': send_vk_keyboard(VK_KEY_9, true); break;
+			case ')': send_vk_keyboard(VK_KEY_0, SHIFT); break;
+			case '!': send_vk_keyboard(VK_KEY_1, SHIFT); break;
+			case '@': send_vk_keyboard(VK_KEY_2, SHIFT); break;
+			case '#': send_vk_keyboard(VK_KEY_3, SHIFT); break;
+			case '$': send_vk_keyboard(VK_KEY_4, SHIFT); break;
+			case '%': send_vk_keyboard(VK_KEY_5, SHIFT); break;
+			case '^': send_vk_keyboard(VK_KEY_6, SHIFT); break;
+			case '&': send_vk_keyboard(VK_KEY_7, SHIFT); break;
+			case '*': send_vk_keyboard(VK_KEY_8, SHIFT); break;
+			case '(': send_vk_keyboard(VK_KEY_9, SHIFT); break;
 			
 			case ';' : send_vk_keyboard(VK_OEM_1);   break;
 			case '/' : send_vk_keyboard(VK_OEM_2);   break;
@@ -339,45 +258,45 @@ int sendkey(const char* str) {
 			case ']' : send_vk_keyboard(VK_OEM_6);   break;
 			case '\'': send_vk_keyboard(VK_OEM_7);   break;
 			
-			case ':': send_vk_keyboard(VK_OEM_1, true); break;
-			case '?': send_vk_keyboard(VK_OEM_2, true); break;
-			case '~': send_vk_keyboard(VK_OEM_3, true); break;
-			case '{': send_vk_keyboard(VK_OEM_4, true); break;
-			case '|': send_vk_keyboard(VK_OEM_5, true); break;
-			case '}': send_vk_keyboard(VK_OEM_6, true); break;
-			case '"': send_vk_keyboard(VK_OEM_7, true); break;
+			case ':': send_vk_keyboard(VK_OEM_1, SHIFT); break;
+			case '?': send_vk_keyboard(VK_OEM_2, SHIFT); break;
+			case '~': send_vk_keyboard(VK_OEM_3, SHIFT); break;
+			case '{': send_vk_keyboard(VK_OEM_4, SHIFT); break;
+			case '|': send_vk_keyboard(VK_OEM_5, SHIFT); break;
+			case '}': send_vk_keyboard(VK_OEM_6, SHIFT); break;
+			case '"': send_vk_keyboard(VK_OEM_7, SHIFT); break;
 			
 			case '-': send_vk_keyboard(VK_OEM_MINUS); break;
-			case '=': send_vk_keyboard(VK_OEM_PLUS);  break;
+			case '=': send_vk_keyboard(VK_OEM_PLUS,  NORMAL); break;
 			
-			case '_': send_vk_keyboard(VK_OEM_MINUS, true); break;
-			case '+': send_vk_keyboard(VK_OEM_PLUS,  true); break;
+			case '_': send_vk_keyboard(VK_OEM_MINUS, SHIFT); break;
+			case '+': send_vk_keyboard(VK_OEM_PLUS,  SHIFT); break;
 			
-			case ',': send_vk_keyboard(VK_OEM_COMMA);        break;
-			case '<': send_vk_keyboard(VK_OEM_COMMA,  true); break;
+			case ',': send_vk_keyboard(VK_OEM_COMMA);  break;
+			case '<': send_vk_keyboard(VK_OEM_COMMA, SHIFT); break;
 			
-			case '.': send_vk_keyboard(VK_OEM_PERIOD);       break;
-			case '>': send_vk_keyboard(VK_OEM_PERIOD, true); break;
+			case '.': send_vk_keyboard(VK_OEM_PERIOD);  break;
+			case '>': send_vk_keyboard(VK_OEM_PERIOD, SHIFT); break;
 			
 			
-			case 300: send_vk_keyboard(VK_RETURN);   break;
-			case 301: send_vk_keyboard(VK_BACK);     break;
-			case 302: send_vk_keyboard(VK_ESCAPE);   break;
-			case 303: send_vk_keyboard(VK_LMENU);    break;
-			case 304: send_vk_keyboard(VK_LCONTROL); break;
-			case 305: send_vk_keyboard(VK_LWIN);     break;
-			case 306: send_vk_keyboard(VK_DELETE);   break;
+			case 300: send_vk_keyboard(VK_RETURN); break; // enter
+			case 301: send_vk_keyboard(VK_BACK,   NORMAL); break; // backspace
+			case 302: send_vk_keyboard(VK_ESCAPE); break; // escape
+			case 303: send_vk_keyboard(VK_LMENU,  NORMAL); break; // ALT
+			case 304: send_vk_keyboard(VK_LWIN,   NORMAL); break; // WIN / MOD
+			case 305: send_vk_keyboard(VK_DELETE); break; // DEL
 			
-			case 400: combo_alt_f4(); break;
-			case 401: combo_win_d();  break;
-			case 402: combo_win_r();  break;
+			case 400: send_vk_keyboard(VK_F4, ALT);    break; // ALT + F4
+			case 401: send_vk_keyboard(VK_KEY_D, WIN); break; // WIN + D
+			case 402: send_vk_keyboard(VK_KEY_R, WIN); break; // WIN + R
 			
-			case 500: send_vk_mouse(VK_LBUTTON); break;
-			case 501: send_vk_mouse(VK_MBUTTON); break;
-			case 502: send_vk_mouse(VK_RBUTTON); break;
+			case 500: send_vk_mouse(VK_LBUTTON); break; // LMB
+			case 501: send_vk_mouse(VK_MBUTTON); break; // MMB
+			case 502: send_vk_mouse(VK_RBUTTON); break; // RMB
 			
-			case 600: combo_ctrl_v(); break;
-			
+			case 600: break; // CTRL + 
+			case 601: break;
+			case 602: break;
 		}
 		
 		Sleep(10);
@@ -389,8 +308,8 @@ int sendkey(const char* str) {
 int main(int argc, char* argv[]) {
 	
 	if (argc < 2) {
-		fprintf(stderr, "USAGE: %s <stringToSend>\n", argv[0]);
-		fprintf(stderr, "%s\n", getSendkeyHelp());
+		std::cerr << "USAGE: " << argv[0] << " <stringToSend>" << std::endl;
+		std::cerr << getSendkeyHelp() << std::endl;
 		return 1;
 	}
 	
