@@ -1,15 +1,26 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include <conio.h>
 #include <shlwapi.h>
 #include <tlhelp32.h>
+#include <unistd.h>
 #include <windows.h>
 
 int injectDll(DWORD pID, const char* dllPath) {
 	
 	// get the dll's full path name
 	char buf[MAX_PATH] = {0};
-	GetFullPathName(dllPath, MAX_PATH, buf, NULL);
+	GetFullPathName(dllPath, MAX_PATH, buf, 0);
 	printf("using dll: \"%s\"\n", buf);
+	
+	// check if file exists
+	if(access(dllPath, F_OK)) {
+		printf("file not found. aborted.\n");
+		printf("injection failed\n");
+		return 1;
+	}
+	
 	printf("injecting dll...\n");
 	
 	HANDLE Proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pID);
@@ -21,16 +32,17 @@ int injectDll(DWORD pID, const char* dllPath) {
 	LPVOID LoadLibAddy = (LPVOID)GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
 	
 	// Allocate space in the process for our DLL
-	LPVOID RemoteString = (LPVOID)VirtualAllocEx(Proc, NULL, strlen(buf), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+	LPVOID RemoteString = (LPVOID)VirtualAllocEx(Proc, 0, strlen(buf), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 	
 	// Write the string name of our DLL in the memory allocated 
-	WriteProcessMemory(Proc, (LPVOID)RemoteString, buf, strlen(buf), NULL);
+	WriteProcessMemory(Proc, (LPVOID)RemoteString, buf, strlen(buf), 0);
 	
 	// Load our DLL
-	CreateRemoteThread(Proc, NULL, NULL, (LPTHREAD_START_ROUTINE)LoadLibAddy, (LPVOID)RemoteString, NULL, NULL);
+	HANDLE RemoteThread = CreateRemoteThread(Proc, 0, 0, (LPTHREAD_START_ROUTINE)LoadLibAddy, (LPVOID)RemoteString, 0, 0);
 	
 	printf("dll injected\n");
 	
+	CloseHandle(RemoteThread);
 	CloseHandle(Proc);
 	
 	return 0;
@@ -43,7 +55,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 	
-	DWORD pID = NULL;
+	DWORD pID = 0;
 	const char* input = argv[1];
 	
 	// check if input is number (id) or process name
@@ -78,7 +90,7 @@ int main(int argc, char* argv[]) {
 			retval = Process32Next(thSnapShot, &pe);
 		}
 		
-		if (pID == NULL) {
+		if (pID == 0) {
 			fprintf(stderr, "error: process with name: \"%s\" not found\n", input);
 			return 1;
 		}

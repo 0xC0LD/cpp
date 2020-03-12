@@ -1,10 +1,11 @@
 #include "main.h"
+#include  	<stdio.h>
 
 DWORD WINAPI HackThread(HMODULE hModule) {
 	
 	AllocConsole();
 	FILE* f;
-	freopen_s(&f, "CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stdout);
 	
 	while(true) {
 		Sleep(10);

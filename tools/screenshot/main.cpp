@@ -1,4 +1,4 @@
-#include <iostream>
+#include <stdio.h>
 #include <windows.h>
 
 PBITMAPINFO CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp) { 

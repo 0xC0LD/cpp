@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <cstdint>
 
 #define INT2VOIDP(i) (void*)(uintptr_t)(i)
 

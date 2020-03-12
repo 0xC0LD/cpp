@@ -1,1 +1,1 @@
-g++ main.cpp -o msgboxspam.exe
+g++32 -static main.cpp -o msgboxspam.exe

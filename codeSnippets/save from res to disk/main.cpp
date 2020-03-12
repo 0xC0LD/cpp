@@ -1,4 +1,4 @@
-#include <iostream>
+#include <stdio.h>
 #include <windows.h>
 #include <fstream>
 #include "res.h"
@@ -9,8 +9,8 @@ int main(int argc, char* argv[]){
 	unsigned int myResourceSize = SizeofResource(NULL, myResource);
 	HGLOBAL myResourceData = LoadResource(NULL, myResource);
 	void* pMyExecutable = LockResource(myResourceData);
-	std::ofstream f("file.txt", std::ios::out | std::ios::binary);
-	f.write((char*)pMyExecutable, myResourceSize);
-	f.close();
+	FILE* f = fopen("new.txt", "wb");
+	fwrite((char*)pMyExecutable, sizeof(BYTE), myResourceSize, f);
+	fclose(f);
 	return 0;
 }
