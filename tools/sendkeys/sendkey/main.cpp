@@ -1,5 +1,4 @@
-#include <iostream>
-#include <list>
+#include <stdio.h>
 #include <windows.h>
 #include "vk.h"
 
@@ -119,16 +118,24 @@ const char* getSendkeyHelp() {
 	"  \\2 - MMB\n"
 	"  \\3 - RMB\n"
 	"\n"
+	"  \\s - CTRL + A\n"
+	"  \\c - CTRL + C\n"
 	"  \\v - CTRL + V\n"
+	"\n"
+	"  \\^ - PAGE UP\n"
+	"  \\_ - PAGE DOWN\n"
+	"\n"
 	;
 }
 
-int sendkey(std::string str) {
+int sendkey(const char* str) {
 	
-	std::list<int> keys;
+	unsigned int l = strlen(str);
+	int keys[l];
+	for (unsigned int i = 0; i < l; i++) { keys[i] = -1; }
 	
 	bool nextIsSpecial = false;
-	for (unsigned int i = 0; i < str.length(); i++) {
+	for (unsigned int i = 0; i < l; i++) {
 		
 		if (str[i] == '\\') {
 			nextIsSpecial = true;
@@ -137,40 +144,44 @@ int sendkey(std::string str) {
 		
 		if (nextIsSpecial) {
 			switch(str[i]) {
-				case '\\': keys.push_back(str[i]); break;
+				case '\\': keys[i] = str[i]; break;
 				
 				// special keyboard
-				case 'n': keys.push_back(300); break; // enter
-				case 'b': keys.push_back(301); break; // backspace
-				case 'e': keys.push_back(302); break; // escape
-				case 'a': keys.push_back(303); break; // ALT
-				case 'w': keys.push_back(304); break; // WIN / MOD
-				case 'd': keys.push_back(305); break; // DEL
+				case 'n': keys[i] = 300; break; // enter
+				case 'b': keys[i] = 301; break; // backspace
+				case 'e': keys[i] = 302; break; // escape
+				case 'a': keys[i] = 303; break; // ALT
+				case 'w': keys[i] = 304; break; // WIN / MOD
+				case 'd': keys[i] = 305; break; // DEL
 				
 				// keyboard combos
-				case 't': keys.push_back(400); break; // ALT + F4
-				case 'h': keys.push_back(401); break; // WIN + D / show desktop / hide all windows
-				case 'r': keys.push_back(402); break; // WIN + R / run box
+				case 't': keys[i] = 400; break; // ALT + F4
+				case 'h': keys[i] = 401; break; // WIN + D / show desktop / hide all windows
+				case 'r': keys[i] = 402; break; // WIN + R / run box
 				
 				// mouse buttons
-				case '1': keys.push_back(500); break; // LMB
-				case '2': keys.push_back(501); break; // MMB
-				case '3': keys.push_back(502); break; // RMB
+				case '1': keys[i] = 500; break; // LMB
+				case '2': keys[i] = 501; break; // MMB
+				case '3': keys[i] = 502; break; // RMB
 				
-				case 's': keys.push_back(600); break; // CTRL + A
-				case 'c': keys.push_back(601); break; // CTRL + C
-				case 'v': keys.push_back(602); break; // CTRL + V
+				case 's': keys[i] = 600; break; // CTRL + A
+				case 'c': keys[i] = 601; break; // CTRL + C
+				case 'v': keys[i] = 602; break; // CTRL + V
+				
+				case '^': keys[i] = 700; break; // PAGE UP
+				case '_': keys[i] = 701; break; // PAGE DOWN
 			}
 			nextIsSpecial = false;
 			continue;
 		}
 		
-			
-		keys.push_back((int)str[i]);
+		keys[i] = (int)str[i];
 	}
 	
-	for (std::list<int>::const_iterator iterator = keys.begin(), end = keys.end(); iterator != end; ++iterator) {
-		switch(*iterator) {
+	for (unsigned int i = 0; i < l; i++) {
+		switch(keys[i]) {
+			
+			case -1: break;
 			
 			case ' ': send_vk_keyboard(VK_SPACE); break;
 			
@@ -279,14 +290,14 @@ int sendkey(std::string str) {
 			case '>': send_vk_keyboard(VK_OEM_PERIOD, SHIFT); break;
 			
 			
-			case 300: send_vk_keyboard(VK_RETURN); break; // enter
+			case 300: send_vk_keyboard(VK_RETURN);         break; // enter
 			case 301: send_vk_keyboard(VK_BACK,   NORMAL); break; // backspace
-			case 302: send_vk_keyboard(VK_ESCAPE); break; // escape
+			case 302: send_vk_keyboard(VK_ESCAPE);         break; // escape
 			case 303: send_vk_keyboard(VK_LMENU,  NORMAL); break; // ALT
 			case 304: send_vk_keyboard(VK_LWIN,   NORMAL); break; // WIN / MOD
-			case 305: send_vk_keyboard(VK_DELETE); break; // DEL
+			case 305: send_vk_keyboard(VK_DELETE);         break; // DEL
 			
-			case 400: send_vk_keyboard(VK_F4, ALT);    break; // ALT + F4
+			case 400: send_vk_keyboard(VK_F4,    ALT); break; // ALT + F4
 			case 401: send_vk_keyboard(VK_KEY_D, WIN); break; // WIN + D
 			case 402: send_vk_keyboard(VK_KEY_R, WIN); break; // WIN + R
 			
@@ -294,9 +305,14 @@ int sendkey(std::string str) {
 			case 501: send_vk_mouse(VK_MBUTTON); break; // MMB
 			case 502: send_vk_mouse(VK_RBUTTON); break; // RMB
 			
-			case 600: break; // CTRL + 
-			case 601: break;
-			case 602: break;
+			case 600: send_vk_keyboard(VK_KEY_A, CTRL); break; // CTRL + A
+			case 601: send_vk_keyboard(VK_KEY_C, CTRL); break; // CTRL + C
+			case 602: send_vk_keyboard(VK_KEY_V, CTRL); break; // CTRL + V
+			
+			case 700: send_vk_keyboard(VK_PRIOR); break; // PAGE UP
+			case 701: send_vk_keyboard(VK_NEXT);  break; // PAGE DOWN
+			
+			/// will add more stuff...
 		}
 		
 		Sleep(10);
@@ -308,8 +324,8 @@ int sendkey(std::string str) {
 int main(int argc, char* argv[]) {
 	
 	if (argc < 2) {
-		std::cerr << "USAGE: " << argv[0] << " <stringToSend>" << std::endl;
-		std::cerr << getSendkeyHelp() << std::endl;
+		printf("USAGE: %s <stringToSend>\n", argv[0]);
+		printf("%s\n", getSendkeyHelp());
 		return 1;
 	}
 	
