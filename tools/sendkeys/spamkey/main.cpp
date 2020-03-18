@@ -129,7 +129,7 @@ const char* getSendkeyHelp() {
 	;
 }
 
-int sendkey(const char* str) {
+int sendkey(const char* str, const int& sleep) {
 	
 	unsigned int l = strlen(str);
 	int keys[l];
@@ -316,7 +316,7 @@ int sendkey(const char* str) {
 			/// will add more stuff...
 		}
 		
-		Sleep(10);
+		Sleep(sleep);
 	}
 	
 	return 0;
@@ -341,8 +341,8 @@ void* endSpam(void *ptr) {
 
 int main(int argc, char* argv[]) {
 	
-	if (argc < 2) {
-		printf("USAGE: %s <stringToSpam>\n", argv[0]);
+	if (argc < 3) {
+		printf("USAGE: %s <delay (ms)> <stringToSpam>\n", argv[0]);
 		printf(getSendkeyHelp());
 		return 1;
 	}
@@ -367,7 +367,7 @@ int main(int argc, char* argv[]) {
 	printf("# starting spam in 1...\n"); Sleep(1000);
 	
 	while (!g_Exit) {
-		sendkey(argv[1]);
+		sendkey(argv[2], atoi(argv[1]));
 	}
 	
 	return 0;
