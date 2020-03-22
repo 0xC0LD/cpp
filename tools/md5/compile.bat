@@ -1,1 +1,0 @@
-g++ -Wall -static main.cpp md5.cpp -o md5.exe

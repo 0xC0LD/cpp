@@ -1,4 +1,4 @@
-#include <iostream>
+#include <stdio.h>
 #include <windows.h>
 #include <cassert>
 #include <gdiplus.h>
@@ -9,7 +9,7 @@
 int main(int argc, char* argv[]) {
 	
 	if (argc < 3) {
-		std::cout << "USAGE: " << argv[0] << " <width> <height> <binary string (e.g. 1111000111010111)>" << std::endl;
+		printf("USAGE: %s <width> <height> <binary string (e.g. 1111000111010111)>\n", argv[0]);
 		return 1;
 	}
 	
@@ -30,24 +30,24 @@ int main(int argc, char* argv[]) {
     int g = 0;
     int b = 0;
 	
-	std::string str = argv[3];
+	const char* str = argv[3];
 	unsigned int count = 0;
 	
 	for(int j = h - 1; j >= 0; j--) {
 		for(int i = 0; i < w; i++) {
 			
-			if (count <= (str.length() - 1)) {
+			if (count <= (strlen(str) - 1)) {
 				
 				switch(str[count]) {
 					case '1': default: r=g=b=0; break;
 					case '0': r=g=b=255; break;
 				}
-				std::cout << str[count];
+				printf("%c", str[count]);
 				count++;
 			}
 			else {
 				r=g=b=255;
-				std::cout << 0;
+				printf("%d", 0);
 			}
 			
 			x = i; y = (h - 1) - j;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 			img[(x+y*w)*3+0] = (unsigned char)(b);
 		}
 		
-		std::cout << std::endl;
+		printf("\n");
 	}
 
     unsigned char bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0, 0,0, 54,0,0,0};

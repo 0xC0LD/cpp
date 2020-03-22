@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <windows.h>
 
 PBITMAPINFO CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp) { 
@@ -115,7 +116,12 @@ int main(int argc, char* argv[]) {
     SelectObject(hDC, hBitmap);
     BitBlt(hDC, 0, 0, w, h, hScreen, 0, 0, SRCCOPY);
 	
-	CreateBMPFile(NULL, (argc >= 2 ? argv[1] : (char*)"screenshot.bmp"), CreateBitmapInfoStruct(NULL, hBitmap), hBitmap, hDC);
+	
+	char charbuf[16];
+	memset(charbuf, '\b', 16);
+	sprintf(charbuf, "%ld.bmp", time(0));
+	
+	CreateBMPFile(NULL, (argc >= 2 ? argv[1] : charbuf), CreateBitmapInfoStruct(NULL, hBitmap), hBitmap, hDC);
 	
 	return 0;
 }
