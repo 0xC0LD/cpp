@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <windows.h>
-#include <fstream>
 #include "res.h"
 
 // save file to disk from resource
