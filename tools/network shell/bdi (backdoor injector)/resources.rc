@@ -1,0 +1,3 @@
+#include "res.h"
+1 24 "manifest.xml"
+IDR_RCDATA1		RCDATA		"shell.exe"

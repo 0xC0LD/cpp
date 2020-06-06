@@ -92,13 +92,13 @@ void send_vk_keyboard(WORD vkey, KB flags = NORMAL) {
 	}
 }
 
-void send_vk_mouse(WORD vkey) {
+void send_vk_mouse(DWORD down, DWORD up) {
 	INPUT input; ZeroMemory(&input, sizeof(input));
 	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-	SendInput(1, &input, sizeof(INPUT)); // send left key down
-	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-	SendInput(1, &input, sizeof(INPUT)); // send left key up
+	input.mi.dwFlags = down;
+	SendInput(1, &input, sizeof(INPUT));
+	input.mi.dwFlags = up;
+	SendInput(1, &input, sizeof(INPUT));
 }
 
 const char* getSendkeyHelp() {
@@ -302,9 +302,9 @@ int sendkey(const char* str, const int& sleep) {
 			case 401: send_vk_keyboard(VK_KEY_D, WIN); break; // WIN + D
 			case 402: send_vk_keyboard(VK_KEY_R, WIN); break; // WIN + R
 			
-			case 500: send_vk_mouse(VK_LBUTTON); break; // LMB
-			case 501: send_vk_mouse(VK_MBUTTON); break; // MMB
-			case 502: send_vk_mouse(VK_RBUTTON); break; // RMB
+			case 500: send_vk_mouse(MOUSEEVENTF_LEFTDOWN,   MOUSEEVENTF_LEFTUP);   break; // LMB
+			case 501: send_vk_mouse(MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP); break; // MMB
+			case 502: send_vk_mouse(MOUSEEVENTF_RIGHTDOWN,  MOUSEEVENTF_RIGHTUP);  break; // RMB
 			
 			case 600: send_vk_keyboard(VK_KEY_A, CTRL); break; // CTRL + A
 			case 601: send_vk_keyboard(VK_KEY_C, CTRL); break; // CTRL + C
