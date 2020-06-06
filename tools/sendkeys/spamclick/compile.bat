@@ -1,1 +1,1 @@
-g++ main.cpp -o spamClickHook.exe
+g++ -Wall -static main.cpp -o spamClickHook.exe
