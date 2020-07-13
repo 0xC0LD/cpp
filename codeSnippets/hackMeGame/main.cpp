@@ -12,12 +12,15 @@ int main(int argc, char* argv[]){
 	int money = 20;
 	int money_time = 0;
 	
+	const char* str = "this is a const string.";
+	
 	while (!gameOver) {
 		
 		std::cout << &gameOver << "  > gameOver..: " << gameOver << std::endl;
 		std::cout << &time     << "  > time......: " << time     << std::endl;
 		std::cout << &health   << "  > health....: " << health   << std::endl;
 		std::cout << &money    << "  > money.....: " << money    << std::endl;
+		std::cout << &str      << "  > str.......: " << str      << std::endl;
 		
 		time++;
 		money_time++;

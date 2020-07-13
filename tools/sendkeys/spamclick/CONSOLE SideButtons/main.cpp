@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#define SPAM_DELAY 5
+#define SPAM_DELAY 3
 
 int gl_status1 = 0;
 int gl_status2 = 0;
@@ -9,13 +9,13 @@ int gl_status2 = 0;
 HHOOK mouseHook;
 LRESULT __stdcall MouseHookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
 	KBDLLHOOKSTRUCT* key = (KBDLLHOOKSTRUCT*)lParam;
-    if (key != NULL) {
+	if (key != NULL) {
 		switch (key->flags) {
-			case 131072: printf("sideButton1: %u\n", wParam); gl_status1 = wParam; return 1; break;
-			case 65536:  printf("sideButton2: %u\n", wParam); gl_status2 = wParam; return 1; break;
+			case 131072: gl_status1 = wParam; return 1; break;
+			case 65536:  gl_status2 = wParam; return 1; break;
 		}
-    }
-    return CallNextHookEx(mouseHook, nCode, wParam, lParam);
+	}
+	return CallNextHookEx(mouseHook, nCode, wParam, lParam);
 }
 
 void send_vk_mouse(DWORD flags) {
@@ -29,10 +29,14 @@ void send_vk_mouse(DWORD flags) {
 bool isSpamThreadRunning = false;
 DWORD WINAPI SpamThread(void* data) {
 	isSpamThreadRunning = true;
+	int x = 0;
+	int y = 0;
 	while (isSpamThreadRunning) {
 		// down = 523, up = 524
-		if (gl_status1 == 523) { send_vk_mouse(MOUSEEVENTF_LEFTDOWN);  send_vk_mouse(MOUSEEVENTF_LEFTUP);  }
-		if (gl_status2 == 523) { send_vk_mouse(MOUSEEVENTF_RIGHTDOWN); send_vk_mouse(MOUSEEVENTF_RIGHTUP); }
+		if      (gl_status1 == 523) { x++; printf("\rsideButton1: %d", x); send_vk_mouse(MOUSEEVENTF_LEFTDOWN);  send_vk_mouse(MOUSEEVENTF_LEFTUP);  }
+		else if (gl_status1 == 524) { x = 0; printf("\n"); gl_status1 = 0; }
+		if      (gl_status2 == 523) { y++; printf("\rsideButton2: %d", y); send_vk_mouse(MOUSEEVENTF_RIGHTDOWN); send_vk_mouse(MOUSEEVENTF_RIGHTUP); }
+		else if (gl_status2 == 524) { y = 0; printf("\n"); gl_status2 = 0; }
 		Sleep(SPAM_DELAY);
 	}
 	return 0;
@@ -47,10 +51,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	HANDLE thread = CreateThread(NULL, 0, SpamThread, NULL, 0, NULL);
 	if (!thread) { perror("ERROR: failed to create spam click thread\n"); }
 	
-    MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
 	
 	isSpamThreadRunning = false;    // stop spam thread
 	UnhookWindowsHookEx(mouseHook); // unhook
-    return msg.wParam;
+	return msg.wParam;
 }
