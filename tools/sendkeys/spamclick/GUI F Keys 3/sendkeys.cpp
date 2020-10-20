@@ -103,25 +103,10 @@ void send_vk_keyboard(WORD vkey, KB flags = NORMAL) {
 	input.ki.dwFlags = KEYEVENTF_KEYUP;
 	SendInput(1, &input, sizeof(INPUT));
 	
-	if (flags & SHIFT) {
-		shift.ki.dwFlags = KEYEVENTF_KEYUP;
-		SendInput(1, &shift, sizeof(INPUT));
-	}
-	
-	if (flags & CTRL) {
-		ctrl.ki.dwFlags = KEYEVENTF_KEYUP;
-		SendInput(1, &ctrl, sizeof(INPUT));
-	}
-	
-	if (flags & ALT) {
-		alt.ki.dwFlags = KEYEVENTF_KEYUP;
-		SendInput(1, &alt, sizeof(INPUT));
-	}
-	
-	if (flags & WIN) {
-		win.ki.dwFlags = KEYEVENTF_KEYUP;
-		SendInput(1, &win, sizeof(INPUT));
-	}
+	if (flags & SHIFT) { shift.ki.dwFlags = KEYEVENTF_KEYUP; SendInput(1, &shift, sizeof(INPUT)); }
+	if (flags & CTRL)  { ctrl.ki.dwFlags  = KEYEVENTF_KEYUP; SendInput(1, &ctrl,  sizeof(INPUT)); }
+	if (flags & ALT)   { alt.ki.dwFlags   = KEYEVENTF_KEYUP; SendInput(1, &alt,   sizeof(INPUT)); }
+	if (flags & WIN)   { win.ki.dwFlags   = KEYEVENTF_KEYUP; SendInput(1, &win,   sizeof(INPUT)); }
 }
 
 void send_vk_mouse(DWORD down, DWORD up) {
@@ -141,7 +126,7 @@ const char* sendkeys_help() {
 	"  \\a - ALT\n"
 	"  \\c - CTRL\n"
 	"  \\w - WINDOWS\n"
-	"  \\d - DEL\n"
+	"  \\x - DEL\n"
 	"\n"
 	"  \\t - ALT + F4\n"
 	"  \\h - WIN + D\n"
@@ -151,70 +136,69 @@ const char* sendkeys_help() {
 	"  \\2 - MMB\n"
 	"  \\3 - RMB\n"
 	"\n"
-	"  \\s - CTRL + A\n"
-	"  \\c - CTRL + C\n"
-	"  \\v - CTRL + V\n"
+	"  \\A - CTRL + A\n"
+	"  \\C - CTRL + C\n"
+	"  \\V - CTRL + V\n"
 	"\n"
-	"  \\^ - PAGE UP\n"
-	"  \\_ - PAGE DOWN\n"
+	"  \\u - PAGE UP\n"
+	"  \\d - PAGE DOWN\n"
 	"\n"
+	"  \\^ - up arrow\n"
+	"  \\v - down arrow\n"
+	"  \\< - left arrow\n"
+	"  \\> - right arrow\n"
 	;
 }
 
 int sendkeys(const char* str) {
 	
-	unsigned int l = strlen(str);
-	int keys[l];
-	for (unsigned int i = 0; i < l; i++) { keys[i] = -1; }
-	
-	bool nextIsSpecial = false;
-	for (unsigned int i = 0; i < l; i++) {
+	bool mod = false;
+	for (unsigned int i = 0; i < strlen(str); i++) {
 		
-		if (str[i] == '\\') {
-			nextIsSpecial = true;
-			continue;
-		}
-		
-		if (nextIsSpecial) {
+		if (mod) {
+			mod = false;
 			switch(str[i]) {
-				case '\\': keys[i] = str[i]; break;
+				case '\\': send_vk_keyboard(VK_OEM_5); break;
 				
-				// special keyboard
-				case 'n': keys[i] = 300; break; // enter
-				case 'b': keys[i] = 301; break; // backspace
-				case 'e': keys[i] = 302; break; // escape
-				case 'a': keys[i] = 303; break; // ALT
-				case 'w': keys[i] = 304; break; // WIN / MOD
-				case 'd': keys[i] = 305; break; // DEL
+				case 'n': send_vk_keyboard(VK_RETURN);   break; // enter
+				case 'b': send_vk_keyboard(VK_BACK);     break; // backspace
+				case 'e': send_vk_keyboard(VK_ESCAPE);   break; // escape
+				case 'a': send_vk_keyboard(VK_LMENU);    break; // ALT
+				case 'c': send_vk_keyboard(VK_LCONTROL); break; // CTRL
+				case 'w': send_vk_keyboard(VK_LWIN);     break; // WIN / MOD
+				case 'x': send_vk_keyboard(VK_DELETE);   break; // DEL
 				
-				// keyboard combos
-				case 't': keys[i] = 400; break; // ALT + F4
-				case 'h': keys[i] = 401; break; // WIN + D / show desktop / hide all windows
-				case 'r': keys[i] = 402; break; // WIN + R / run box
+				case 't': send_vk_keyboard(VK_F4,    ALT); break; // ALT + F4
+				case 'h': send_vk_keyboard(VK_KEY_D, WIN); break; // WIN + D
+				case 'r': send_vk_keyboard(VK_KEY_R, WIN); break; // WIN + R
 				
-				// mouse buttons
-				case '1': keys[i] = 500; break; // LMB
-				case '2': keys[i] = 501; break; // MMB
-				case '3': keys[i] = 502; break; // RMB
+				case '1': send_vk_mouse(MOUSEEVENTF_LEFTDOWN,   MOUSEEVENTF_LEFTUP);   break; // LMB
+				case '2': send_vk_mouse(MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP); break; // MMB
+				case '3': send_vk_mouse(MOUSEEVENTF_RIGHTDOWN,  MOUSEEVENTF_RIGHTUP);  break; // RMB
 				
-				case 's': keys[i] = 600; break; // CTRL + A
-				case 'c': keys[i] = 601; break; // CTRL + C
-				case 'v': keys[i] = 602; break; // CTRL + V
+				case 'A': send_vk_keyboard(VK_KEY_A, CTRL); break; // CTRL + A
+				case 'C': send_vk_keyboard(VK_KEY_C, CTRL); break; // CTRL + C
+				case 'V': send_vk_keyboard(VK_KEY_V, CTRL); break; // CTRL + V
 				
-				case '^': keys[i] = 700; break; // PAGE UP
-				case '_': keys[i] = 701; break; // PAGE DOWN
+				case 'u': send_vk_keyboard(VK_PRIOR); break; // PAGE UP
+				case 'd': send_vk_keyboard(VK_NEXT);  break; // PAGE DOWN
+				
+				case '^': send_vk_keyboard(VK_UP);    break; // up arrow
+				case 'v': send_vk_keyboard(VK_DOWN);  break; // down arrow
+				case '<': send_vk_keyboard(VK_LEFT);  break; // left arrow
+				case '>': send_vk_keyboard(VK_RIGHT); break; // right arrow
+				
+				/// add more : https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mouse_event
+				/// TODO: add wheel and more clicks
+				/// will add more stuff...
 			}
-			nextIsSpecial = false;
 			continue;
 		}
 		
-		keys[i] = (int)str[i];
-	}
-	
-	for (unsigned int i = 0; i < l; i++) {
-		switch(keys[i]) {
+		switch(str[i]) {
 			
 			case -1: break;
+			case '\\': mod = true; continue; break;
 			
 			case ' ': send_vk_keyboard(VK_SPACE); break;
 			
@@ -294,13 +278,13 @@ int sendkeys(const char* str) {
 			case '*': send_vk_keyboard(VK_KEY_8, SHIFT); break;
 			case '(': send_vk_keyboard(VK_KEY_9, SHIFT); break;
 			
-			case ';' : send_vk_keyboard(VK_OEM_1);   break;
-			case '/' : send_vk_keyboard(VK_OEM_2);   break;
-			case '`' : send_vk_keyboard(VK_OEM_3);   break;
-			case '[' : send_vk_keyboard(VK_OEM_4);   break;
-			case '\\': send_vk_keyboard(VK_OEM_5);   break;
-			case ']' : send_vk_keyboard(VK_OEM_6);   break;
-			case '\'': send_vk_keyboard(VK_OEM_7);   break;
+			case ';' : send_vk_keyboard(VK_OEM_1); break;
+			case '/' : send_vk_keyboard(VK_OEM_2); break;
+			case '`' : send_vk_keyboard(VK_OEM_3); break;
+			case '[' : send_vk_keyboard(VK_OEM_4); break;
+			//case '\\': send_vk_keyboard(VK_OEM_5); break; // reserved for special mod key
+			case ']' : send_vk_keyboard(VK_OEM_6); break;
+			case '\'': send_vk_keyboard(VK_OEM_7); break;
 			
 			case ':': send_vk_keyboard(VK_OEM_1, SHIFT); break;
 			case '?': send_vk_keyboard(VK_OEM_2, SHIFT); break;
@@ -310,8 +294,8 @@ int sendkeys(const char* str) {
 			case '}': send_vk_keyboard(VK_OEM_6, SHIFT); break;
 			case '"': send_vk_keyboard(VK_OEM_7, SHIFT); break;
 			
-			case '-': send_vk_keyboard(VK_OEM_MINUS);         break;
-			case '=': send_vk_keyboard(VK_OEM_PLUS,  NORMAL); break;
+			case '-': send_vk_keyboard(VK_OEM_MINUS); break;
+			case '=': send_vk_keyboard(VK_OEM_PLUS);  break;
 			
 			case '_': send_vk_keyboard(VK_OEM_MINUS, SHIFT); break;
 			case '+': send_vk_keyboard(VK_OEM_PLUS,  SHIFT); break;
@@ -321,37 +305,9 @@ int sendkeys(const char* str) {
 			
 			case '.': send_vk_keyboard(VK_OEM_PERIOD);        break;
 			case '>': send_vk_keyboard(VK_OEM_PERIOD, SHIFT); break;
-			
-			
-			case 300: send_vk_keyboard(VK_RETURN);         break; // enter
-			case 301: send_vk_keyboard(VK_BACK,   NORMAL); break; // backspace
-			case 302: send_vk_keyboard(VK_ESCAPE);         break; // escape
-			case 303: send_vk_keyboard(VK_LMENU,  NORMAL); break; // ALT
-			case 304: send_vk_keyboard(VK_LWIN,   NORMAL); break; // WIN / MOD
-			case 305: send_vk_keyboard(VK_DELETE);         break; // DEL
-			
-			case 400: send_vk_keyboard(VK_F4,    ALT); break; // ALT + F4
-			case 401: send_vk_keyboard(VK_KEY_D, WIN); break; // WIN + D
-			case 402: send_vk_keyboard(VK_KEY_R, WIN); break; // WIN + R
-			
-			case 500: send_vk_mouse(MOUSEEVENTF_LEFTDOWN,   MOUSEEVENTF_LEFTUP);   break; // LMB
-			case 501: send_vk_mouse(MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP); break; // MMB
-			case 502: send_vk_mouse(MOUSEEVENTF_RIGHTDOWN,  MOUSEEVENTF_RIGHTUP);  break; // RMB
-			
-			// add more : https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mouse_event
-			/// TODO: add wheel and more clicks
-			
-			case 600: send_vk_keyboard(VK_KEY_A, CTRL); break; // CTRL + A
-			case 601: send_vk_keyboard(VK_KEY_C, CTRL); break; // CTRL + C
-			case 602: send_vk_keyboard(VK_KEY_V, CTRL); break; // CTRL + V
-			
-			case 700: send_vk_keyboard(VK_PRIOR); break; // PAGE UP
-			case 701: send_vk_keyboard(VK_NEXT);  break; // PAGE DOWN
-			
-			/// will add more stuff...
 		}
 		
-		Sleep(10);
+		//Sleep(10);
 	}
 	
 	return 0;
