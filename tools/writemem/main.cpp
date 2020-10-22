@@ -16,13 +16,13 @@ int main(int argc, char* argv[]) {
 	printf("# opening pid: %ld - ...", pid);
 	HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	printf("\b\b\b");
-	if (handle == NULL) { perror("FAIL\n"); return 1; }
+	if (handle == NULL) { fprintf(stderr, "FAIL\n"); return 1; }
 	printf("SUCCESS\n");
 	
 	printf("# writing: %d -> %p (%ld) - ...", newValue, address, address_);
 	BOOL ret = WriteProcessMemory(handle, address, &newValue, sizeof(newValue), 0);
 	printf("\b\b\b");
-	if (!ret) { perror("FAIL\n"); return 1; }
+	if (!ret) { fprintf(stderr, "FAIL\n"); return 1; }
 	printf("SUCCESS");
 	
 	return 0;

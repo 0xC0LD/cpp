@@ -57,9 +57,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	// hooks
 	if (!(keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardHookCallback, NULL, 0)))
-	{ perror("ERROR: failed to install keyboard hook\n"); }
+	{ fprintf(stderr, "ERROR: failed to install keyboard hook\n"); }
 	if (!(mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookCallback, NULL, 0)))
-	{ perror("ERROR: failed to install mouse hook\n");    }
+	{ fprintf(stderr, "ERROR: failed to install mouse hook\n");    }
 	
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0)) {

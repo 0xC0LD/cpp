@@ -1,68 +1,43 @@
 # cpp
-windows C++ tools/utils / code snippets / junk / ...
+### windows C/C++ utils
+
 ```
-$ tree
-├── codeSnippets
-│   ├── admin manifest
-│   ├── cd, pwd
-│   ├── console animations
-│   │   ├── animation - Loading
-│   │   └── animation - Spin
-│   ├── crunch
-│   ├── dir, cp, cpDir
-│   ├── exit_on_q
-│   ├── GetAsyncKeyState
-│   ├── getch
-│   ├── hackMeGame
-│   ├── icons in exe or dll
-│   │   ├── icons in dll
-│   │   └── icons in exe
-│   ├── input hook
-│   ├── ipv4
-│   ├── msgboxspam
-│   ├── random bitmap pixels
-│   ├── save from res to disk
-│   ├── threading
-│   │   ├── CreateThread
-│   │   └── pthread
-│   ├── timer (BENCHMARKING)
-│   ├── website
-│   └── write2file
-└── tools
-    ├── argv2stdout
-    ├── binstr2bmp
-    ├── clipboard
-    ├── dll injection
-    │   ├── console dll
-    │   ├── dll injector
-    │   ├── exit dll
-    │   ├── playwav dll
-    │   └── stackoverflow dll
-    ├── dpc (desktop picture changer)
-    ├── exip
-    ├── fib
-    ├── gpath
-    ├── keylogger
-    │   ├── GetAsyncKeyState
-    │   └── input hook
-    ├── network shell
-    │   ├── bdi (backdoor injector)
-    │   ├── shell_remote_bloated
-    │   ├── shell_remote_mini
-    │   └── shell_reverse_mini
-    ├── playwav
-    ├── screenshot
-    ├── send
-    ├── sendkeys
-    │   ├── hold LMB
-    │   ├── sendkey
-    │   ├── spamclick
-    │   │   ├── CONSOLE SideButtons
-    │   │   ├── GUI F Keys
-    │   │   ├── GUI F Keys 2
-    │   │   └── GUI F Keys 3
-    │   └── spamkey
-    ├── sudo (admin cmd)
-    ├── UTCtime
-    └── writemem
+argv2stdout    - print out args
+binstr2bmp     - draw a binary string in an image with black and white pixels 
+clipboard      - print clipboard (ascii text only)
+dpc            - change the desktop background picture
+exip           - print current public ip
+fib            - print fibonacci numbers
+gpath          - print a readable %PATH% variable
+playwav        - play a wav file
+ss/screenshot  - take a screenshot and save it as a bitmap in %CD%
+send           - send a file to an IP and port
+sudo           - (admin cmd) a command prompt that asks for admin privileges on start
+utc/UTCtime    - print Unix epoch time int
+writemem       - write an int to a process' memory
+
+dll injection         - dll injection examples
+├── dll injector      - simple dll injector
+├── console dll       - a dll that attaches a console to the process
+├── exit dll          - a dll that calls exit(0);
+├── playwav dll       - a dll that plays a wav file
+└── stackoverflow dll - a dll that slowsdown/crashes the application (creates a thread fork bomb)
+ 
+keylogger            - keylogger examples
+├── GetAsyncKeyState - a keylogger that calls the GetAsyncKeyState function in a while loop (slow, CPU hog)
+└── input hook       - a keylogger that makes a keyboard input hook callback (fast) 
+
+network shell               - network shell examples
+├── bdi (backdoor injector) - a program that makes a persistent backdoor on windows
+├── shell_remote_bloated    - fully featured remote shell (meterpreter-like)
+├── shell_remote_mini       - minimal remote shell
+└── shell_reverse_mini      - minimal reverse shell
+
+sendkeys                     - examples on how to simulate mouse/keyboard input
+├── hold LMB                 - hold left mouse button program
+├── sendkey                  - send keyboard input
+├── spamkey                  - spam keyboard input
+└── spamclick
+    ├── CONSOLE SideButtons  - replace the side mouse buttons with spam clickers for left mouse button and right mouse button
+    └── GUI F Keys           - spam clicker (GUI)
 ```

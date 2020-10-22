@@ -197,7 +197,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wc.hIconSm		 = LoadIcon(NULL, IDI_APPLICATION);
 	*/
 	
-	if(!RegisterClassEx(&wc)) { perror("ERROR: failed to register window\n"); return 0; }
+	if(!RegisterClassEx(&wc)) { fprintf(stderr, "ERROR: failed to register window\n"); return 0; }
 	
 	// get desktop rect to center the window on spawn
 	RECT rect;
@@ -213,14 +213,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		WINDOW_H,  // height
 		NULL, NULL, hInstance, NULL);
 
-	if (hwnd == NULL) { perror("ERROR: failed to create window\n"); }
+	if (hwnd == NULL) { fprintf(stderr, "ERROR: failed to create window\n"); }
 	
 	// hook
 	if (!(keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardHookCallback, NULL, 0)))
-	{ perror("ERROR: failed to install keyboard hook\n"); }
+	{ fprintf(stderr, "ERROR: failed to install keyboard hook\n"); }
 	
 	// create spam thread
-	if (!CreateThread(NULL, 0, SpamThread, NULL, 0, NULL)) { perror("ERROR: failed to create spam click thread\n"); }
+	if (!CreateThread(NULL, 0, SpamThread, NULL, 0, NULL)) {  fprintf(stderr, "ERROR: failed to create spam click thread\n"); }
 	
 	// main loop
 	while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }

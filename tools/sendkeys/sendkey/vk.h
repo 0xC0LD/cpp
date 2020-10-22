@@ -1,3 +1,6 @@
+#ifndef VIRTUAL_KEYCODES_LETTERS
+#define VIRTUAL_KEYCODES_LETTERS
+
 #define VK_KEY_0 0x30 // 0
 #define VK_KEY_1 0x31 // 1
 #define VK_KEY_2 0x32 // 2
@@ -34,3 +37,5 @@
 #define VK_KEY_X 0x58 // X
 #define VK_KEY_Y 0x59 // Y
 #define VK_KEY_Z 0x5A // Z
+
+#endif

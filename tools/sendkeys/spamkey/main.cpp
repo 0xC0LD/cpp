@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 	
 	// create spam thread
 	if (!CreateThread(NULL, 0, endSpam, NULL, 0, NULL))
-	{ perror("ERROR: failed to create spam click thread\n"); return 1; }
+	{ fprintf(stderr, "ERROR: failed to create spam click thread\n"); return 1; }
 	
 	// countdown
 	printf("# press the [END] key on your keyboard to stop the spam...\n");

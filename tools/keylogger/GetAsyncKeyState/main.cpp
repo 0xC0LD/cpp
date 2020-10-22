@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
 	#if dumpInTXTfile
 	FILE* f = fopen("file.txt", "w");
 	if (f == NULL) {
-		perror("ERROR: failed to open txt file\n");
+		fprintf(stderr, "ERROR: failed to open txt file\n");
 		return 1;
 	}
 	#endif

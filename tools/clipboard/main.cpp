@@ -3,13 +3,13 @@
 #include <windows.h>
 
 int main() {
-	if (!OpenClipboard(nullptr)) { perror("ERROR: failed to open clipboard\n"); return 1; }
+	if (!OpenClipboard(nullptr)) { fprintf(stderr, "ERROR: failed to open clipboard\n"); return 1; }
 	HANDLE hData = GetClipboardData(CF_TEXT);
 	
-	if (hData == nullptr) { perror("ERROR: invalid text\n"); return 1; }
+	if (hData == nullptr) { fprintf(stderr, "ERROR: invalid text\n"); return 1; }
 	char* pszText = static_cast<char*>(GlobalLock(hData));
 	
-	if (pszText == nullptr) { perror("ERROR: failed to get text pointer\n"); return 1; }
+	if (pszText == nullptr) { fprintf(stderr, "ERROR: failed to get text pointer\n"); return 1; }
 	GlobalUnlock(hData);
 	CloseClipboard();
 	

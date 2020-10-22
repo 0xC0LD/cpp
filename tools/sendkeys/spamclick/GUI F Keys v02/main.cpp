@@ -1,3 +1,8 @@
+// TODO: 
+// - add ctrl+a https://stackoverflow.com/questions/10127054/select-all-text-in-edit-contol-by-clicking-ctrla
+// - add DEBUG macro (remove the error code)
+// - remove iostream (it's bloat)
+
 #include <iostream>
 #include <stdio.h>
 #include <conio.h>
@@ -5,7 +10,6 @@
 #include <cassert>
 
 #include "resource.h"
-#include "vk.h"
 #include "ext.cpp"
 #include "sendkeys.cpp"
 
@@ -24,7 +28,7 @@ HWND controls_customText[2];
 HWND controls_buttons[2];
 const char* texts_btn[2] = {
 	"Help",
-	"Clear"
+	"Reset"
 };
 
 const char* texts[controls_count] = {
@@ -60,9 +64,6 @@ void updateUI(const unsigned int& uiNum) {
 		case 13: SetWindowText(controls_counters[3], std::to_string(cu2_clicks).c_str()); break;
 	}
 }
-
-// TODO: read https://stackoverflow.com/questions/10127054/select-all-text-in-edit-contol-by-clicking-ctrla
-//
 
 HHOOK keyboardHook;
 LRESULT __stdcall KeyboardHookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -165,12 +166,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 				}
 				
 				// status boxes
-				controls_status[i] = CreateWindow(TEXT("static"), TEXT(""), WS_VISIBLE | WS_CHILD | WS_BORDER, 330, 10+35*n, 60,  30, hwnd, NULL, NULL, NULL);
+				controls_status[i] = CreateWindow(TEXT("static"), TEXT(""), WS_VISIBLE | ES_CENTER | WS_CHILD | WS_BORDER, 330, 10+35*n, 60,  30, hwnd, NULL, NULL, NULL);
 				SendMessage(controls_status[i], WM_SETFONT, (WPARAM)hFont, TRUE);
 				
 				// counters
 				if (i >= 0 && i <= 3)  {
-					controls_counters[i] = CreateWindow(TEXT("static"), TEXT(""), WS_VISIBLE | WS_CHILD | WS_BORDER, 395, 10+35*n, 110,  30, hwnd, NULL, NULL, NULL);
+					controls_counters[i] = CreateWindow(TEXT("static"), TEXT(""), WS_VISIBLE | ES_CENTER | WS_CHILD | WS_BORDER, 395, 10+35*n, 110,  30, hwnd, NULL, NULL, NULL);
 					SendMessage(controls_counters[i],  WM_SETFONT, (WPARAM)hFont, TRUE);
 				}
 				
@@ -179,7 +180,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 					controls_buttons[i-4] = CreateWindowEx(0,
 						TEXT("button"),
 						texts_btn[i-4],
-						WS_VISIBLE | WS_CHILD | BS_CENTER | BS_FLAT | BS_OWNERDRAW,
+						WS_VISIBLE | WS_CHILD | BS_CENTER | BS_FLAT | BS_OWNERDRAW | WS_BORDER,
 						395, 10+35*n, 110, 30, hwnd, (HMENU)(1337 + i - 4), NULL, NULL
 					);
 					SendMessage(controls_buttons[i-4], WM_SETFONT, (WPARAM)hFont, TRUE);
@@ -222,6 +223,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 		}
 		
 		case WM_DRAWITEM: {
+			
+			// draw buttons
 			if (wParam == 1337 || wParam == 1338) {
 				LPDRAWITEMSTRUCT lpDIS = (LPDRAWITEMSTRUCT)lParam;
 				SetBkColor(lpDIS->hDC, RGB(10, 10, 10));
@@ -234,28 +237,31 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 		
 		}
 		
+		
 		case WM_CTLCOLORBTN: {
 			HDC hdc = (HDC)wParam;
-			SetTextColor(hdc, RGB(255, 255, 255));
-			SetBkColor  (hdc, RGB(10, 10, 10));
-			return (INT_PTR)color_bg;
-			break;
-		}
-		
-		case WM_CTLCOLORSTATIC: {
-			HDC hdc = (HDC)wParam;
-			SetBkMode(hdc, TRANSPARENT);
 			SetBkColor  (hdc, RGB(10, 10, 10));
 			SetTextColor(hdc, RGB(34, 111, 169));
 			return (INT_PTR)color_bg;
 			break;
 		}
 		
+		// static text labels/textboxes
+		case WM_CTLCOLORSTATIC: {
+			HDC hdc = (HDC)wParam;
+			SetBkColor  (hdc, RGB(10, 10, 10));
+			SetTextColor(hdc, RGB(34, 111, 169));
+			SetBkMode(hdc, TRANSPARENT);
+			return (INT_PTR)color_bg;
+			break;
+		}
+		
+		// editable textboxes
 		case WM_CTLCOLOREDIT: {
 			HDC hdc = (HDC)wParam;
-			SetBkMode(hdc, TRANSPARENT);
-			SetBkColor  (hdc, RGB(10, 10, 10));
-			SetTextColor(hdc, RGB(69, 155, 218));
+			SetBkColor(hdc,   RGB(10, 10, 10));
+			SetTextColor(hdc, RGB(34, 111, 169));
+			//SetBkMode((HDC)wParam, TRANSPARENT);
 			return (INT_PTR)color_bg;
 			break;
 		}
@@ -300,7 +306,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	// register window
 	if(!RegisterClassEx(&wc))
-	{ perror("ERROR: failed to register window\n"); return 1; }
+	{ fprintf(stderr, "ERROR: failed to register window\n"); return 1; }
 	
 	// get desktop rect to center the window on spawn
 	RECT rect;
@@ -318,15 +324,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		NULL, NULL, hInstance, NULL
 	);
 
-	if (hwnd == NULL) { perror("ERROR: failed to create window\n"); return 1; }
+	if (hwnd == NULL) { fprintf(stderr, "ERROR: failed to create window\n"); return 1; }
 	
 	// hook
 	if (!(keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardHookCallback, NULL, 0)))
-	{ perror("ERROR: failed to install keyboard hook\n"); return 1; }
+	{ fprintf(stderr, "ERROR: failed to install keyboard hook\n"); return 1; }
 	
 	// create spam thread
 	if (!CreateThread(NULL, 0, SpamThread, NULL, 0, NULL))
-	{ perror("ERROR: failed to create spam click thread\n"); return 1; }
+	{ fprintf(stderr, "ERROR: failed to create spam click thread\n"); return 1; }
 	
 	// main loop
 	while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }

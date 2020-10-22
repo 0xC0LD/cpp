@@ -45,11 +45,11 @@ DWORD WINAPI SpamThread(void* data) {
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     
 	// hook
-	if (!(mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookCallback, NULL, 0))) { perror("ERROR: failed to install mouse hook\n"); }
+	if (!(mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookCallback, NULL, 0))) { fprintf(stderr, "ERROR: failed to install mouse hook\n"); }
 	
 	// create spam thread
 	HANDLE thread = CreateThread(NULL, 0, SpamThread, NULL, 0, NULL);
-	if (!thread) { perror("ERROR: failed to create spam click thread\n"); }
+	if (!thread) { fprintf(stderr, "ERROR: failed to create spam click thread\n"); }
 	
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
