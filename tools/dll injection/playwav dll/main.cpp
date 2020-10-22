@@ -1,7 +1,7 @@
 #include "main.h"
 
 DWORD WINAPI HackThread(HMODULE hModule) {
-	PlaySound("C:\\Users\\user\\Desktop\\dll injection\\playwav dll\\file.wav", GetModuleHandle(NULL), SND_FILENAME | SND_SYNC);
+	PlaySound("C:\\Users\\user\\Desktop\\file.wav", GetModuleHandle(NULL), SND_FILENAME | SND_SYNC);
 	return 0;
 }
 
