@@ -24,7 +24,7 @@ dll injection         - dll injection examples
 └── stackoverflow dll - a dll that slows down/crashes the application (creates a thread fork bomb)
  
 keylogger            - keylogger examples
-├── GetAsyncKeyState - a keylogger that calls the GetAsyncKeyState function in a while loop (slow, CPU hog)
+├── GetAsyncKeyState - a keylogger that calls GetAsyncKeyState func in a loop (slow, CPU hog)
 └── input hook       - a keylogger that makes a keyboard input hook callback (fast)
 
 network shell               - network shell examples
