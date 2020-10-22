@@ -21,11 +21,11 @@ dll injection         - dll injection examples
 ├── console dll       - a dll that attaches a console to the process
 ├── exit dll          - a dll that calls exit(0);
 ├── playwav dll       - a dll that plays a wav file
-└── stackoverflow dll - a dll that slowsdown/crashes the application (creates a thread fork bomb)
+└── stackoverflow dll - a dll that slows down/crashes the application (creates a thread fork bomb)
  
 keylogger            - keylogger examples
 ├── GetAsyncKeyState - a keylogger that calls the GetAsyncKeyState function in a while loop (slow, CPU hog)
-└── input hook       - a keylogger that makes a keyboard input hook callback (fast) 
+└── input hook       - a keylogger that makes a keyboard input hook callback (fast)
 
 network shell               - network shell examples
 ├── bdi (backdoor injector) - a program that makes a persistent backdoor on windows
@@ -34,10 +34,10 @@ network shell               - network shell examples
 └── shell_reverse_mini      - minimal reverse shell
 
 sendkeys                     - examples on how to simulate mouse/keyboard input
-├── hold LMB                 - hold left mouse button program
+├── hold LMB                 - a program that just holds the left mouse button after a countdown
 ├── sendkey                  - send keyboard input
-├── spamkey                  - spam keyboard input
+├── spamkey                  - spam keyboard input after a countdown
 └── spamclick
-    ├── CONSOLE SideButtons  - replace the side mouse buttons with spam clickers for left mouse button and right mouse button
+    ├── CONSOLE SideButtons  - replace the side mouse buttons with spam clickers for LMB & RMB
     └── GUI F Keys           - spam clicker (GUI)
 ```
