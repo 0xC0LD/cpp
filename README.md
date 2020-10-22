@@ -33,11 +33,11 @@ network shell               - network shell examples
 ├── shell_remote_mini       - minimal remote shell
 └── shell_reverse_mini      - minimal reverse shell
 
-sendkeys                     - examples on how to simulate mouse/keyboard input
-├── hold LMB                 - a program that just holds the left mouse button after a countdown
-├── sendkey                  - send keyboard input
-├── spamkey                  - spam keyboard input after a countdown
+sendkeys                    - examples on how to simulate mouse/keyboard input
+├── hold LMB                - a program that just holds the left mouse button after a countdown
+├── sendkey                 - send keyboard input
+├── spamkey                 - spam keyboard input after a countdown
 └── spamclick
-    ├── CONSOLE SideButtons  - replace the side mouse buttons with spam clickers for LMB & RMB
-    └── GUI F Keys           - spam clicker (GUI)
+    ├── CONSOLE SideButtons - replace the side mouse buttons with spam clickers for LMB & RMB
+    └── GUI F Keys          - spam clicker (GUI)
 ```
