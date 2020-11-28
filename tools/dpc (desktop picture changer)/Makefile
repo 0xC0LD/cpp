@@ -1,11 +1,9 @@
-CC := g++
-CFLAGS := -Wall -Werror -Wextra -static
-EXECUTABLE := dpc
+CC = g++
+FLAGS = -Wall -Werror -Wextra -static -Os -s
+EXE = dpc
 
-main.o: main.cpp
-	$(CC) $(CFLAGS) main.cpp -o $(EXECUTABLE)
-	
-all: main.o
+all:
+	$(CC) $(FLAGS) main.cpp -o $(EXE)
 
 clean:
 	del "*.exe"

@@ -3,7 +3,7 @@
 #include <windows.h>
 
 bool g_Exit = false;
-void* end() {
+void* end(void*) {
 	while(g_Exit == false) {
 		Sleep(50);
 		if (GetAsyncKeyState(VK_END) != 0) {

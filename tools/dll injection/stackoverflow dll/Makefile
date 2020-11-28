@@ -1,6 +1,6 @@
 CC = g++
 FLAGS_O = -c -DBUILD_DLL
-FLAGS_X = -Wall -shared -static -Wl,--out-implib,
+FLAGS_X = -Wall -shared -static -Os -s -Wl,--out-implib,
 DLL = crash
 
 all: main.cpp 

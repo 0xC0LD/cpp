@@ -1,5 +1,5 @@
 CC = g++
-FLAGS = -Wall -static main.cpp
+FLAGS = -Wall -static -Os -s main.cpp
 EXE = ldll
 
 all: main.cpp 

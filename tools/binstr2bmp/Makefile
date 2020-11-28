@@ -1,5 +1,5 @@
 CC = g++
-FLAGS = -Wall -Werror -Wextra -static
+FLAGS = -Wall -Werror -Wextra -static -Os -s
 EXE = binstr2bmp
 
 all:
