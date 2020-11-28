@@ -152,7 +152,7 @@ const char* CaptureKeyPress(const int& key) {
 }
 
 
-int main(int argc, char* argv[]) {
+int main() {
 	
 	#if dumpInTXTfile
 	FILE* f = fopen("file.txt", "w");

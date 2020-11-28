@@ -2,7 +2,7 @@
 #include <time.h>
 #include <windows.h>
 
-PBITMAPINFO CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp) { 
+PBITMAPINFO CreateBitmapInfoStruct(HBITMAP hBmp) { 
 	BITMAP bmp; 
 	PBITMAPINFO pbmi; 
 	WORD    cClrBits; 
@@ -51,7 +51,7 @@ PBITMAPINFO CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp) {
 	return pbmi; 
 } 
 
-int CreateBMPFile(HWND hwnd, LPTSTR pszFile, PBITMAPINFO pbi,  HBITMAP hBMP, HDC hDC) {
+int CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi,  HBITMAP hBMP, HDC hDC) {
 	
     HANDLE hf;              // file handle  
     BITMAPFILEHEADER hdr;   // bitmap file-header  
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
 	memset(charbuf, '\b', 16);
 	sprintf(charbuf, "%ld.bmp", time(0));
 	
-	CreateBMPFile(NULL, (argc >= 2 ? argv[1] : charbuf), CreateBitmapInfoStruct(NULL, hBitmap), hBitmap, hDC);
+	CreateBMPFile((argc >= 2 ? argv[1] : charbuf), CreateBitmapInfoStruct(hBitmap), hBitmap, hDC);
 	
 	return 0;
 }

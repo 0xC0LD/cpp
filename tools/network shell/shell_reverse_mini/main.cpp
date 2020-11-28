@@ -7,7 +7,7 @@
 
 #define RETRY_MS 5000
 
-int main(int argc, char** argv) {
+int main() {
 	
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);

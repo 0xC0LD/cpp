@@ -1,1 +1,0 @@
-g++ -Wall -static main.cpp -lwinmm -o playwav.exe

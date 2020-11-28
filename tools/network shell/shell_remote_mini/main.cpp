@@ -30,7 +30,7 @@ int ssend(SOCKET& socket, const char* text, bool print = false) {
 	return ret;
 }
 
-int main(int argc, char* argv[]) {
+int main() {
 	
 	// initialize winsock
 	WSADATA wsData;

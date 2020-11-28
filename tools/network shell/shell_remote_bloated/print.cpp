@@ -1,25 +1,23 @@
 // printing functions // will be used for logging in the future? maybe?
+
+#ifdef DEBUG
 int echo(const std::string& text, const bool& error = false, const bool& newline = true) {
-	
-	#ifdef DEBUG
-	
 	if (error)   { std::cerr << (newline ? text + "\n" : text); }
 	else         { std::cout << (newline ? text + "\n" : text); }
-	
-	#endif
-	
 	return 0;
 }
+
+#else
+
+int echo(...) { return 0; }
+
+#endif
 
 int getSendErr() { return echo("[-] send error: " + std::to_string(WSAGetLastError()), true); }
 
 int echoNsend(const SOCKET& clientSocket, const std::string& text, const bool& error = false, const bool& newline = true) {
-	
-	#ifdef DEBUG
-	
+
 	echo(text, error, newline); // print/echo
-	
-	#endif
 	
 	// append new line
 	std::string t = (newline ? text + "\n" : text);

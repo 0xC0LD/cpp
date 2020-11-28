@@ -102,7 +102,7 @@ void RMB() {
 }
 
 bool isSpamThreadRunning = false;
-DWORD WINAPI SpamThread(void* data) {
+DWORD WINAPI SpamThread(void*) {
 	isSpamThreadRunning = true;
 	while (isSpamThreadRunning) {
 		if (LMB_on) { LMB_clicks++; LMB(); updateUI(5); }
@@ -172,7 +172,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 	return 0;
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     
 	WNDCLASSEX wc; // A properties struct of our window
 	HWND hwnd;     // A 'HANDLE', hence the H, or a pointer to our window

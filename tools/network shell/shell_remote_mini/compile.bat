@@ -1,1 +1,0 @@
-g++ -Wall -D DEBUG main.cpp -lws2_32 -o shell_debug.exe

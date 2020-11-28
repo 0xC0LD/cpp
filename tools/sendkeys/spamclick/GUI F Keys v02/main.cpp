@@ -116,7 +116,7 @@ void CUS(const int& ctrl) {
 }
 
 bool isSpamThreadRunning = false;
-DWORD WINAPI SpamThread(void* data) {
+DWORD WINAPI SpamThread(void*) {
 	isSpamThreadRunning = true;
 	while (isSpamThreadRunning) {
 		if (LMB_on) { LMB_clicks++; LMB();  updateUI(10); }
@@ -170,7 +170,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 				SendMessage(controls_status[i], WM_SETFONT, (WPARAM)hFont, TRUE);
 				
 				// counters
-				if (i >= 0 && i <= 3)  {
+				if (i <= 3)  {
 					controls_counters[i] = CreateWindow(TEXT("static"), TEXT(""), WS_VISIBLE | ES_CENTER | WS_CHILD | WS_BORDER, 395, 10+35*n, 110,  30, hwnd, NULL, NULL, NULL);
 					SendMessage(controls_counters[i],  WM_SETFONT, (WPARAM)hFont, TRUE);
 				}
@@ -285,7 +285,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 	return 0;
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     
 	WNDCLASSEX wc; // A properties struct of our window
 	HWND hwnd;     // A 'HANDLE', hence the H, or a pointer to our window

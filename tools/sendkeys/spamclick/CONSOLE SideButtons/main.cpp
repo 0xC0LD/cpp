@@ -27,7 +27,7 @@ void send_vk_mouse(DWORD flags) {
 }
 
 bool isSpamThreadRunning = false;
-DWORD WINAPI SpamThread(void* data) {
+DWORD WINAPI SpamThread(LPVOID) {
 	isSpamThreadRunning = true;
 	int x = 0;
 	int y = 0;
@@ -42,13 +42,13 @@ DWORD WINAPI SpamThread(void* data) {
 	return 0;
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int main() {
     
 	// hook
 	if (!(mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookCallback, NULL, 0))) { fprintf(stderr, "ERROR: failed to install mouse hook\n"); }
 	
 	// create spam thread
-	HANDLE thread = CreateThread(NULL, 0, SpamThread, NULL, 0, NULL);
+	HANDLE thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SpamThread, NULL, 0, NULL);
 	if (!thread) { fprintf(stderr, "ERROR: failed to create spam click thread\n"); }
 	
 	MSG msg;

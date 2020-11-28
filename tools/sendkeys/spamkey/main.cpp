@@ -5,7 +5,7 @@
 
 bool g_Exit = false;
 
-DWORD WINAPI endSpam(void* data) {
+DWORD WINAPI endSpam(void*) {
 	while(!g_Exit) {
 		if (GetAsyncKeyState(VK_END) != 0) {
 			g_Exit = true;

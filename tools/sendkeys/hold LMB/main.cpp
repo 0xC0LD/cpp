@@ -3,31 +3,26 @@
 #include <windows.h>
 
 bool g_Exit = false;
-void* end(void *ptr) {
-	
+void* end() {
 	while(g_Exit == false) {
 		Sleep(50);
-		
 		if (GetAsyncKeyState(VK_END) != 0) {
 			printf("# [END] pressed, exiting...\n");
 			g_Exit = true;
 			break;
 		}
 	}
-	
 	return NULL;
 }
 
-int main(int argc, char* argv[]) {
+int main() {
 	
 	pthread_t inc_x_thread;
-	if(pthread_create(&inc_x_thread, NULL, end, NULL)) {
-
+	if(pthread_create(&inc_x_thread, NULL, &end, NULL)) {
 		fprintf(stderr, "ERROR: failed to create END thread\n");
 		return 1;
 	}
 
-	// 
 	if(pthread_detach(inc_x_thread)) {
 		fprintf(stderr, "ERROR: failed to start END thread\n");
 		return 2;
