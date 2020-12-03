@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <windows.h>
 #include "vk.h"
 #include "sendkeys.h"
