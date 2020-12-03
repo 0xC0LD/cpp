@@ -1,7 +1,3 @@
-// TODO: 
-// - add ctrl+a https://stackoverflow.com/questions/10127054/select-all-text-in-edit-contol-by-clicking-ctrla
-// - add DEBUG macro (remove the error code)
-// - remove iostream (it's bloat)
 
 #include <stdio.h>
 #include <conio.h>
@@ -53,7 +49,7 @@ void updateUI(const unsigned int uiNum) {
 		case 2: SetWindowText(controls_status[2], cu1_on ? "[+]" : "[ ]"); break;
 		case 3: SetWindowText(controls_status[3], cu2_on ? "[+]" : "[ ]"); break;
 		
-		case 4: SetWindowText(controls_status[4], gl_toggle ? "[+]" : "[ ]");         break;
+		case 4: SetWindowText(controls_status[4], gl_toggle ? "[+]" : "[ ]"); break;
 		case 5: {
 			char buff[2];
 			sprintf(buff, "%d", spamDelay);
@@ -156,8 +152,8 @@ DWORD WINAPI SpamThread() {
 	return 0;
 }
 
-#define color_fg CreateSolidBrush(RGB(255, 255, 255));
-#define color_bg CreateSolidBrush(RGB(10, 10, 10));
+HBRUSH color_fg;
+HBRUSH color_bg;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
 	switch (Message) {
@@ -320,6 +316,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE x1, LPSTR x2, int x3) {
 	UNUSED(x1);
 	UNUSED(x2);
 	UNUSED(x3);
+	
+	// set colors
+	color_fg = CreateSolidBrush(RGB(255, 255, 255));
+	color_bg = CreateSolidBrush(RGB(10, 10, 10));
     
 	WNDCLASSEX wc; // A properties struct of our window
 	HWND hwnd;     // A 'HANDLE', hence the H, or a pointer to our window

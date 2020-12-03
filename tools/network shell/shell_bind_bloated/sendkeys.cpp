@@ -1,6 +1,6 @@
 #include "vk.h"
 
-enum KB{
+enum KB {
 	NORMAL = 0x00,
 	SHIFT  = 0x01,
 	CTRL   = 0x02,
