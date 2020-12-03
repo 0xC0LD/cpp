@@ -11,7 +11,7 @@
 
 #include "resource.h"
 #include "ext.cpp"
-#include "sendkeys.cpp"
+#include "sendkeys.h"
 
 #define WINDOW_W 520
 #define WINDOW_H 260

@@ -1,10 +1,10 @@
-CC = g++
+CC = gcc
 FLAGS = -Wall -Werror -Wextra -static -Os -s
 LIBS = -lgdi32 -lgdiplus
 EXE = ss
 
 all:
-	$(CC) $(FLAGS) main.cpp -o $(EXE) $(LIBS)
+	$(CC) $(FLAGS) main.c -o $(EXE) $(LIBS)
 
 clean:
 	del "*.exe"

@@ -1,9 +1,11 @@
-CC = g++
+CC = gcc
 FLAGS = -Wall -Werror -Wextra -static -Os -s
 EXE = spamkey
 
-all:
-	$(CC) $(FLAGS) main.cpp -o $(EXE)
+OBJ = sendkeys.o
+
+all: $(OBJ)
+	$(CC) $(FLAGS) $(OBJ) main.c -o $(EXE)
 
 clean:
 	del "*.exe"
