@@ -1,7 +1,7 @@
-CC = gcc
+CC    = mingw32-gcc
 FLAGS = -Wall -Werror -Wextra -static -Os -s
-LIB = -lgdi32 -mwindows
-EXE = SpamClicker
+LIB   = -lgdi32 -mwindows
+EXE   = SpamClicker
 
 OBJ = sendkeys.o
 
@@ -10,4 +10,4 @@ all: $(OBJ)
 	$(CC) $(FLAGS) $(OBJ) main.c -o $(EXE) resources.res $(LIB)
 
 clean:
-	del "*.exe"
+	del "*.o" "*.res" "*.exe"

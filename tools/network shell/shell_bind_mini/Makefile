@@ -1,7 +1,9 @@
-CC = gcc
+CC    = mingw32-gcc
+CC32  = i686-w64-mingw32-gcc
+CC64  = x86_64-w64-mingw32-gcc
 FLAGS = -Wall -Werror -Wextra -static -Os -s
-LIB = -lws2_32
-EXE = shell
+LIB   = -lws2_32
+EXE   = shell
 
 debug:
 	$(CC) $(FLAGS) main.c -o $(EXE)_debug $(LIB) -D DEBUG 

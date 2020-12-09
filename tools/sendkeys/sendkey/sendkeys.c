@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <windows.h>
-#include "vk.h"
 #include "sendkeys.h"
+#include "vk.h"
 
 void send_vk_keyboard(WORD vkey, KB flags) {
 	

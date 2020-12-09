@@ -1,18 +1,20 @@
-CC = gcc
+CC    = mingw32-gcc
+CC32  = i686-w64-mingw32-gcc
+CC64  = x86_64-w64-mingw32-gcc
 FLAGS_O = -c -DBUILD_DLL
-FLAGS_X = -Wall -shared -static -Os -s -Wl,--out-implib,main
+FLAGS_X = -Wall -shared -static -Wl,--out-implib,
 LIBS = -lwinmm
 DLL = music
 
 all: main.c 
 	$(CC) $(FLAGS_O) main.c -o main.o
-	$(CC) $(FLAGS_X).a main.o -o $(DLL).dll $(LIBS)
+	$(CC) $(FLAGS_X)main.a main.o -o $(DLL).dll $(LIBS)
 	
-	$(CC)32 $(FLAGS_O) main.c -o main32.o
-	$(CC)32 $(FLAGS_X)32.a main32.o -o $(DLL)32.dll $(LIBS)
+	$(CC32) $(FLAGS_O) main.c -o main32.o
+	$(CC32) $(FLAGS_X)main32.a main32.o -o $(DLL)32.dll $(LIBS)
 	
-	$(CC)64 $(FLAGS_O) main.c -o main64.o
-	$(CC)64 $(FLAGS_X)64.a main64.o -o $(DLL)64.dll $(LIBS)
+	$(CC64) $(FLAGS_O) main.c -o main64.o
+	$(CC64) $(FLAGS_X)main64.a main64.o -o $(DLL)64.dll $(LIBS)
 	
 clean:
 	del "*.dll" "*.o" "*.a"
