@@ -3,15 +3,20 @@
 
 ```
 argv2stdout    - print out args
-binstr2bmp     - draw a binary string in an image with black and white pixels 
+binstr2bmp     - draw a binary string in an image with black and white pixels
+clear ram      - malloc 0 memory the hole ram (eat the ram)
 clipboard      - print clipboard (ascii text only)
+cry            - cesar cypher encoder (string, file)
 dpc            - change the desktop background picture
 exip           - print current public ip
 fib            - print fibonacci numbers
 gpath          - print a readable %PATH% variable
+http-server    - simple http server
+kill           - kill a process by name (doesn't need admin privileges for some reason)
+listproc       - list all process and ids
 playwav        - play a wav file
 ss/screenshot  - take a screenshot and save it as a bitmap in %CD%
-send           - send a file to an IP and port
+sendrecv       - send/receive file to an IP port (both will connect - client side)
 sudo           - (admin cmd) a command prompt that asks for admin privileges on start
 utc/UTCtime    - print Unix epoch time int
 writemem       - write an int to a process' memory
