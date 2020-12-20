@@ -5,6 +5,20 @@
 
 // NOTE: srand(seed) rand() will return different values on different OSs
 
+int cry_buff(const char* in, char* out, size_t bothSize, const int mode, const int shift) {
+	for (size_t i = 0; i < bothSize; i++) {
+		int c = in[i];
+		int g;
+		switch (mode) {
+			case 1: g = c + shift; break;
+			case 2: g = c - shift; break;
+			default: return 0; break;
+		}
+		out[i] = g;
+	}
+	return 1;
+}
+
 int cry_file(const char* filei, const char* fileo, const int mode, const int shift) {
     FILE* fp1 = fopen(filei, "rb");
     if (fp1 == NULL) { return 0; }
@@ -56,33 +70,33 @@ int cry_file_r(const char* filei, const char* fileo, const int mode, const int r
 	return 1;
 }
 
-int cry_str(const char* s1, char* s2, const int mode, const int shift) {
-	for (int i = 0; i < strlen(s1); i++) {
-		int c = s1[i];
+int cry_str(const char* in, char* out, const int mode, const int shift) {
+	for (size_t i = 0; i < strlen(in); i++) {
+		int c = in[i];
 		int g;
 		switch (mode) {
 			case 1: g = c + shift; break;
 			case 2: g = c - shift; break;
 			default: return 0; break;
 		}
-		s2[i] = g;
+		out[i] = g;
 	}
 	return 1;
 }
 
-int cry_str_r(const char* s1, char* s2, const int mode, const int rnd_seed) {
+int cry_str_r(const char* in, char* out, const int mode, const int rnd_seed) {
 	
 	srand(rnd_seed);
 	
-	for (int i = 0; i < strlen(s1); i++) {
-		int c = s1[i];
+	for (size_t i = 0; i < strlen(in); i++) {
+		int c = in[i];
 		int g;
 		switch (mode) {
 			case 1: g = c + rand(); break;
 			case 2: g = c - rand(); break;
 			default: return 0; break;
 		}
-		s2[i] = g;
+		out[i] = g;
 	}
 	return 1;
 }

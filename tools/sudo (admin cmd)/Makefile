@@ -1,12 +1,14 @@
-CC    = mingw32-gcc
-CC32  = i686-w64-mingw32-gcc
-CC64  = x86_64-w64-mingw32-gcc
-FLAGS = -Wall -Werror -Wextra -static -Os -s
-EXE   = sudo
+CC     = mingw32-gcc
+CC32   = i686-w64-mingw32-gcc
+CC64   = x86_64-w64-mingw32-gcc
+CFLAGS = -Wall -Werror -Wextra -static -Os -s
+EXE    = sudo
 
-all:
+OBJ = main.c
+
+all: $(OBJ)
 	windres resources.rc -O coff -o resources.res
-	$(CC) $(FLAGS) main.c -o $(EXE) resources.res
+	$(CC) $(CFLAGS) $(OBJ) -o $(EXE) resources.res
 
 clean:
-	del "*.res" "*.exe"
+	del "*.o" "*.res" "*.exe"

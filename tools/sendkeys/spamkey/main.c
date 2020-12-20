@@ -1,15 +1,14 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <windows.h>
 
 #include "sendkeys.h"
 
-bool g_Exit = false;
+BOOL g_Exit = FALSE;
 
 DWORD WINAPI endSpam() {
 	while(!g_Exit) {
 		if (GetAsyncKeyState(VK_END) != 0) {
-			g_Exit = true;
+			g_Exit = TRUE;
 			printf("# [END] pressed, exiting...\n");
 			break;
 		}

@@ -1,13 +1,13 @@
 CC    = mingw32-gcc
 CC32  = i686-w64-mingw32-gcc
 CC64  = x86_64-w64-mingw32-gcc
-FLAGS = -Wall -static -Os -s main.c
+CFLAGS = -Wall -static -Os -s
 EXE = ldll
 
 all: main.c 
-	$(CC)   $(FLAGS) -o $(EXE)
-	$(CC32) $(FLAGS) -o $(EXE)32
-	$(CC64) $(FLAGS) -o $(EXE)64
+	$(CC)   $(CFLAGS) main.c -o $(EXE)
+	$(CC32) $(CFLAGS) main.c -o $(EXE)32
+	$(CC64) $(CFLAGS) main.c -o $(EXE)64
 	
 clean:
 	del "*.exe"

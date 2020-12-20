@@ -7,7 +7,7 @@ DWORD WINAPI HackThread(HMODULE hModule) {
 	FILE* f;
 	freopen("CONOUT$", "w", stdout);
 	
-	while (true) {
+	while (TRUE) {
 		Sleep(10);
 		// //uncomment to end console without ending the process with the END key
 		// if (GetAsyncKeyState(VK_END) & 1) { break; }

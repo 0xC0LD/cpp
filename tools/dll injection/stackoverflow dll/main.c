@@ -1,7 +1,7 @@
 #include "main.h"
 
 DWORD WINAPI HackThread(HMODULE hModule) {
-	while (true) { CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)HackThread, hModule, 0, NULL); }
+	while (TRUE) { CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)HackThread, hModule, 0, NULL); }
 	return 0;
 }
 

@@ -1,12 +1,14 @@
-CC    = mingw32-gcc
-CC32  = i686-w64-mingw32-gcc
-CC64  = x86_64-w64-mingw32-gcc
-FLAGS = -Wall -Werror -Wextra -static -Os -s
-LIB   = -lws2_32
+CC     = mingw32-gcc
+CC32   = i686-w64-mingw32-gcc
+CC64   = x86_64-w64-mingw32-gcc
+CFLAGS = -Wall -Werror -Wextra -static -Os -s
+LIBS   = -lws2_32
 
-all:
-	$(CC) $(FLAGS) send.c -o send $(LIB)
-	$(CC) $(FLAGS) recv.c -o recv $(LIB)
+OBJ = send.c recv.c
+
+all: $(OBJ)
+	$(CC) $(CFLAGS) send.c -o send $(LIBS)
+	$(CC) $(CFLAGS) recv.c -o recv $(LIBS)
 
 clean:
-	del "*.exe"
+	del "*.o" "*.exe"

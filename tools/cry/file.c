@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
 	
 	if (argc < 4) {
 		printf("USAGE: %s <mode> <shift> <input file> <output file>\n", argv[0]);
-		printf(" mode: +,-\n");
+		printf(" mode: 1 = +, 2 = -\n");
 		return 1;
 	}
 	

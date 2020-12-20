@@ -1,7 +1,6 @@
-#include <stdbool.h>
 #include <windows.h>
-#include "vk.h"
 #include "sendkeys.h"
+#include "vk.h"
 
 void send_vk_keyboard(WORD vkey, KB flags) {
 	
@@ -80,6 +79,7 @@ void send_vk_mouse(DWORD down, DWORD up) {
 
 const char* sendkeys_help() {
 	return
+	"CUSTOM KEYS:\n"
 	"  \\n - ENTER\n"
 	"  \\b - BACKSPACE\n"
 	"  \\e - ESCAPE\n"
@@ -112,11 +112,11 @@ const char* sendkeys_help() {
 
 int sendkeys(const char* str) {
 	
-	bool mod = false;
+	BOOL mod = FALSE;
 	for (unsigned int i = 0; i < strlen(str); i++) {
 		
 		if (mod) {
-			mod = false;
+			mod = FALSE;
 			switch(str[i]) {
 				case '\\': send_vk_keyboard(VK_OEM_5, NORMAL); break;
 				
@@ -158,7 +158,7 @@ int sendkeys(const char* str) {
 		switch(str[i]) {
 			
 			case -1: break;
-			case '\\': mod = true; continue; break;
+			case '\\': mod = TRUE; continue; break;
 			
 			case ' ': send_vk_keyboard(VK_SPACE, NORMAL); break;
 			
@@ -270,5 +270,5 @@ int sendkeys(const char* str) {
 		//Sleep(10);
 	}
 	
-	return 0;
+	return 1;
 }

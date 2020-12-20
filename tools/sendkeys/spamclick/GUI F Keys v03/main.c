@@ -1,7 +1,5 @@
-
 #include <stdio.h>
 #include <conio.h>
-#include <stdbool.h>
 #include <windows.h>
 
 #include "resource.h"
@@ -35,11 +33,11 @@ const char* texts[controls_count] = {
 };
 
 int spamDelay = 3;
-bool LMB_on = false; unsigned int LMB_clicks = 0;
-bool RMB_on = false; unsigned int RMB_clicks = 0;
-bool cu1_on = false; unsigned int cu1_clicks = 0;
-bool cu2_on = false; unsigned int cu2_clicks = 0;
-bool gl_toggle = false;
+BOOL LMB_on = FALSE; unsigned int LMB_clicks = 0;
+BOOL RMB_on = FALSE; unsigned int RMB_clicks = 0;
+BOOL cu1_on = FALSE; unsigned int cu1_clicks = 0;
+BOOL cu2_on = FALSE; unsigned int cu2_clicks = 0;
+BOOL gl_toggle = FALSE;
 
 // update status
 void updateUI(const unsigned int uiNum) {
@@ -102,10 +100,10 @@ LRESULT __stdcall KeyboardHookCallback(int nCode, WPARAM wParam, LPARAM lParam) 
 		
 		if (wParam == NUM_KEYDOWN) {
 			switch (k->vkCode) {
-				case VK_F1: if (!gl_toggle) { LMB_on = true; } updateUI(0); return 1; break;
-				case VK_F2: if (!gl_toggle) { RMB_on = true; } updateUI(1); return 1; break;
-				case VK_F3: if (!gl_toggle) { cu1_on = true; } updateUI(2); return 1; break;
-				case VK_F4: if (!gl_toggle) { cu2_on = true; } updateUI(3); return 1; break;
+				case VK_F1: if (!gl_toggle) { LMB_on = TRUE; } updateUI(0); return 1; break;
+				case VK_F2: if (!gl_toggle) { RMB_on = TRUE; } updateUI(1); return 1; break;
+				case VK_F3: if (!gl_toggle) { cu1_on = TRUE; } updateUI(2); return 1; break;
+				case VK_F4: if (!gl_toggle) { cu2_on = TRUE; } updateUI(3); return 1; break;
 				
 				case VK_F5:                                                                               return 1; break;
 				case VK_F6: spamDelay--; spamDelay = clamp(spamDelay, DELAY_MIN, DELAY_MAX); updateUI(5); return 1; break;
@@ -115,10 +113,10 @@ LRESULT __stdcall KeyboardHookCallback(int nCode, WPARAM wParam, LPARAM lParam) 
 		
 		if (wParam == NUM_KEYUP) {
 			switch (k->vkCode) {
-				case VK_F1: LMB_on = gl_toggle ? !LMB_on : false; updateUI(0); return 1; break;
-				case VK_F2: RMB_on = gl_toggle ? !RMB_on : false; updateUI(1); return 1; break;
-				case VK_F3: cu1_on = gl_toggle ? !cu1_on : false; updateUI(2); return 1; break;
-				case VK_F4: cu2_on = gl_toggle ? !cu2_on : false; updateUI(3); return 1; break;
+				case VK_F1: LMB_on = gl_toggle ? !LMB_on : FALSE; updateUI(0); return 1; break;
+				case VK_F2: RMB_on = gl_toggle ? !RMB_on : FALSE; updateUI(1); return 1; break;
+				case VK_F3: cu1_on = gl_toggle ? !cu1_on : FALSE; updateUI(2); return 1; break;
+				case VK_F4: cu2_on = gl_toggle ? !cu2_on : FALSE; updateUI(3); return 1; break;
 				
 				case VK_F5: gl_toggle = !gl_toggle; updateUI(4); return 1; break;
 				case VK_F6:                                      return 1; break;
@@ -139,9 +137,9 @@ void CUS(const int ctrl) {
 	sendkeys(buff);
 }
 
-bool isSpamThreadRunning = false;
+BOOL isSpamThreadRunning = FALSE;
 DWORD WINAPI SpamThread() {
-	isSpamThreadRunning = true;
+	isSpamThreadRunning = TRUE;
 	while (isSpamThreadRunning) {
 		if (LMB_on) { LMB_clicks++; LMB();  updateUI(10); }
 		if (RMB_on) { RMB_clicks++; RMB();  updateUI(11); }
@@ -228,11 +226,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 				// Clear
 				case 1338: {
 					spamDelay = 3;
-					LMB_on = false; LMB_clicks = 0;
-					RMB_on = false; RMB_clicks = 0;
-					cu1_on = false; cu1_clicks = 0;
-					cu2_on = false; cu2_clicks = 0;
-					gl_toggle = false;
+					LMB_on = FALSE; LMB_clicks = 0;
+					RMB_on = FALSE; RMB_clicks = 0;
+					cu1_on = FALSE; cu1_clicks = 0;
+					cu2_on = FALSE; cu2_clicks = 0;
+					gl_toggle = FALSE;
 					
 					// clear text boxes
 					for (unsigned int i = 0; i < 2; i++)
@@ -372,7 +370,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE x1, LPSTR x2, int x3) {
 	while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
 	
 	// stop spam thread
-	isSpamThreadRunning = false;
+	isSpamThreadRunning = FALSE;
 	
 	// unhook
 	UnhookWindowsHookEx(keyboardHook);

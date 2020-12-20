@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <ctype.h>
 #include <conio.h>
 #include <shlwapi.h>
@@ -60,9 +59,9 @@ int main(int argc, char* argv[]) {
 	const char* input = argv[1];
 	
 	// check if input is number (id) or process name
-	bool isID = true;
-	for (unsigned int i = 0; i < sizeof(input); i++) {
-		if (!isdigit(input[i])) { isID = false; }
+	BOOL isID = TRUE;
+	for (size_t i = 0; i < strlen(input); i++) {
+		if (!isdigit(input[i])) { isID = FALSE; }
 	}
 	
 	if (isID) {
@@ -73,7 +72,7 @@ int main(int argc, char* argv[]) {
 	else {
 		// retrieve process ID
 		HANDLE thSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-		if (thSnapShot == INVALID_HANDLE_VALUE) { fprintf(stderr, "error: unable to create toolhelp snapshot\n"); return false; } 
+		if (thSnapShot == INVALID_HANDLE_VALUE) { fprintf(stderr, "error: unable to create toolhelp snapshot\n"); return FALSE; } 
 	
 		PROCESSENTRY32 pe;
 		pe.dwSize = sizeof(PROCESSENTRY32);

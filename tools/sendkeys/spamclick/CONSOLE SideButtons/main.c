@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <windows.h>
 
 #define SPAM_DELAY 3
@@ -27,9 +26,9 @@ void send_vk_mouse(DWORD flags) {
 	SendInput(1, &input, sizeof(INPUT));
 }
 
-bool isSpamThreadRunning = false;
+BOOL isSpamThreadRunning = FALSE;
 DWORD WINAPI SpamThread() {
-	isSpamThreadRunning = true;
+	isSpamThreadRunning = TRUE;
 	int x = 0;
 	int y = 0;
 	while (isSpamThreadRunning) {
@@ -55,7 +54,7 @@ int main() {
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
 	
-	isSpamThreadRunning = false;    // stop spam thread
+	isSpamThreadRunning = FALSE;    // stop spam thread
 	UnhookWindowsHookEx(mouseHook); // unhook
 	return msg.wParam;
 }
