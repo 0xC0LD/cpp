@@ -14,52 +14,65 @@ TRACE   - The TRACE method performs a message loop-back test along the path to t
 PATCH   - The PATCH method is used to apply partial modifications to a resource. 
 */
 
-
-int get_request_type(char* buf) {
-	char retval[10] = {0};
-	sscanf(buf, "%10s", retval);
-	if (!strcmp(retval, "GET"))     { return GET;     }
-	if (!strcmp(retval, "HEAD"))    { return HEAD;    }
-	if (!strcmp(retval, "POST"))    { return POST;    }
-	if (!strcmp(retval, "PUT"))     { return PUT;     }
-	if (!strcmp(retval, "DELETE"))  { return DELETE;  }
-	if (!strcmp(retval, "CONNECT")) { return CONNECT; }
-	if (!strcmp(retval, "OPTIONS")) { return OPTIONS; }
-	if (!strcmp(retval, "TRACE"))   { return TRACE;   }
-	if (!strcmp(retval, "PATCH"))   { return PATCH;   }
-	return UNK;
-}
-
 const char* request2str(const int* val) {
 	switch (*val) {
-		case GET:  return "GET";  break;
-		case POST: return "POST"; break;
-		case PUT:  return "PUT";  break;
+		case RT_GET:     return "GET";     break;
+		case RT_HEAD:    return "HEAD";    break;
+		case RT_POST:    return "POST";    break;
+		case RT_PUT:     return "PUT";     break;
+		case RT_DELETE:  return "DELETE";  break;
+		case RT_CONNECT: return "CONNECT"; break;
+		case RT_OPTIONS: return "OPTIONS"; break;
+		case RT_TRACE:   return "TRACE";   break;
+		case RT_PATCH:   return "PATCH";   break;
 	}
 	return "UNK";
 }
 
-char* get_request_value(char* buf) {
-	char retval[100] = {0};
-	strtok(buf, " "); // 1st str token
-	char* ptr2 = strtok(NULL, " "); // 2nd string token
-	if (ptr2 == NULL) { return ""; } // client didn't request anything
-	sscanf(ptr2, "%100s", retval); // move 2nd word to buf
-	if (retval[strlen(retval)-1] == '/') { strcat(retval, "index.html"); }
-	return strdup(retval);
-}
-
-REQUEST* GetRequest(SOCKET sock) {
+REQUEST* GetRequest(SOCKET sock, FILE* logFile) {
+	// get req
 	char buf[REQUEST_SIZE] = {0};
 	int msg_len = recv(sock, buf, REQUEST_SIZE, 0);
-	printf(" -- recv: %d", msg_len);
+	tee(" -> '%d'b -> ", msg_len);
+	if (msg_len == 0 || msg_len == SOCKET_ERROR) { return NULL; }
 	
-	//printf(" -- msg: \n```\n%s\n```\n", buf);
-
-	if (msg_len == 0) { return NULL; }
+	// log it
+	char buf2[REQUEST_SIZE] = {0};
+	int s = 0;
+	for (int i = 0; i < REQUEST_SIZE; i++) {
+		if (buf[i] == '\r') { continue; }
+		buf2[s] = buf[i];
+		s++;
+	}
+	fwrite(buf2, msg_len, 1, logFile);
+	fflush(logFile);
+	
+	// make req
 	REQUEST* request = malloc(sizeof(REQUEST));
 	request->length = msg_len;
-	request->type   = get_request_type(buf);
-	request->value  = get_request_value(buf);
+	
+	// get request
+	#define REQBUFFSIZ 10
+	char str1[REQBUFFSIZ];
+	char str2[MAX_PATH];
+	char format[32];
+	sprintf(format, "%%%ds %%%ds", REQBUFFSIZ-1, MAX_PATH-1);
+	sscanf(buf, format, str1, str2);
+	if (str2[strlen(str2)-1] == '/') { strcat(str2, "index.html"); }
+	
+	enum REQUEST_TYPES type = RT_UNK;
+	if      (!strcmp(str1, "GET"))     { type = RT_GET;     }
+	else if (!strcmp(str1, "HEAD"))    { type = RT_HEAD;    }
+	else if (!strcmp(str1, "POST"))    { type = RT_POST;    }
+	else if (!strcmp(str1, "PUT"))     { type = RT_PUT;     }
+	else if (!strcmp(str1, "DELETE"))  { type = RT_DELETE;  }
+	else if (!strcmp(str1, "CONNECT")) { type = RT_CONNECT; }
+	else if (!strcmp(str1, "OPTIONS")) { type = RT_OPTIONS; }
+	else if (!strcmp(str1, "TRACE"))   { type = RT_TRACE;   }
+	else if (!strcmp(str1, "PATCH"))   { type = RT_PATCH;   }
+	
+	request->type   = type;
+	request->value  = strdup(str2);
+	
 	return request;
 }

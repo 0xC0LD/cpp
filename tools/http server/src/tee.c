@@ -19,5 +19,6 @@ void tee(char const* fmt, ...) {
     va_end(ap);
     va_start(ap, fmt);
     vfprintf(tee_file, fmt, ap);
+	fflush(tee_file);
     va_end(ap);
 }

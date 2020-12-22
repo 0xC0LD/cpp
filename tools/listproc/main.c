@@ -30,7 +30,6 @@ int listproc(const char* procNameOrId) {
 		if (procNameOrId != NULL && !(isID ? (pe.th32ProcessID == pID) : (StrStrI(pe.szExeFile, procNameOrId) != NULL))) { continue; }
 		printf("%ld\t: %s\n", pe.th32ProcessID, pe.szExeFile);
 	}
-	
 	CloseHandle(thSnapShot);
 	
 	return 0;

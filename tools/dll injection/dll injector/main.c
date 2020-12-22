@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <windows.h>
 
-int injectDll(DWORD pID, const char* dllPath) {
+BOOL injectDll(DWORD pID, const char* dllPath) {
 	
 	// get the dll's full path name
 	char buf[MAX_PATH] = {0};
@@ -16,17 +16,17 @@ int injectDll(DWORD pID, const char* dllPath) {
 	
 	// check if file exists
 	if(access(dllPath, F_OK)) {
-		printf("file not found. aborted.\n");
-		printf("injection failed\n");
-		return 1;
+		fprintf(stderr, "file not found. aborted.\n");
+		fprintf(stderr, "injection failed\n");
+		return FALSE;
 	}
 	
 	printf("injecting dll...\n");
 	
-	HANDLE Proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pID);
+	HANDLE Proc = OpenProcess(MAXIMUM_ALLOWED, FALSE, pID);
 	if (!Proc) {
-		printf("error: OpenProcess() failed: %lu\n", GetLastError());
-		return 1;
+		fprintf(stderr, "error: OpenProcess() failed: %lu\n", GetLastError());
+		return FALSE;
 	} 
 	
 	LPVOID LoadLibAddy = (LPVOID)GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
@@ -35,7 +35,7 @@ int injectDll(DWORD pID, const char* dllPath) {
 	LPVOID RemoteString = (LPVOID)VirtualAllocEx(Proc, 0, strlen(buf), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 	
 	// Write the string name of our DLL in the memory allocated 
-	WriteProcessMemory(Proc, (LPVOID)RemoteString, buf, strlen(buf), 0);
+	if (!WriteProcessMemory(Proc, (LPVOID)RemoteString, buf, strlen(buf), 0)) { fprintf(stderr, "error: WriteProcessMemory() failed: %lu\n", GetLastError()); return FALSE; }
 	
 	// Load our DLL
 	HANDLE RemoteThread = CreateRemoteThread(Proc, 0, 0, (LPTHREAD_START_ROUTINE)LoadLibAddy, (LPVOID)RemoteString, 0, 0);
@@ -45,7 +45,7 @@ int injectDll(DWORD pID, const char* dllPath) {
 	CloseHandle(RemoteThread);
 	CloseHandle(Proc);
 	
-	return 0;
+	return TRUE;
 }
 
 int main(int argc, char* argv[]) {
