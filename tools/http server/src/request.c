@@ -29,12 +29,17 @@ const char* request2str(const int* val) {
 	return "UNK";
 }
 
-REQUEST* GetRequest(SOCKET sock, FILE* logFile) {
+REQUEST* GetRequest(SOCKET sock) {
 	// get req
 	char buf[REQUEST_SIZE] = {0};
+	flog(">> Receiving...\n");
 	int msg_len = recv(sock, buf, REQUEST_SIZE, 0);
 	tee(" -> '%d'b -> ", msg_len);
-	if (msg_len == 0 || msg_len == SOCKET_ERROR) { return NULL; }
+	flog(">> RECV BUFF.: %d\n", msg_len);
+	if (msg_len == 0 || msg_len == SOCKET_ERROR) {
+		tee("SOCKET_ERROR");
+		return NULL;
+	}
 	
 	// log it
 	char buf2[REQUEST_SIZE] = {0};
@@ -44,8 +49,10 @@ REQUEST* GetRequest(SOCKET sock, FILE* logFile) {
 		buf2[s] = buf[i];
 		s++;
 	}
-	fwrite(buf2, msg_len, 1, logFile);
-	fflush(logFile);
+	flog("%s", buf2);
+	// FILE* f = flog_getFile();
+	// fwrite(buf2, msg_len, 1, f);
+	// fflush(f);
 	
 	// make req
 	REQUEST* request = malloc(sizeof(REQUEST));

@@ -21,9 +21,10 @@ typedef struct {
 // logging system
 #include "tee.h"
 
-extern REQUEST* GetRequest(SOCKET, FILE*);
+extern REQUEST* GetRequest(SOCKET);
 extern RESPONSE* GetResponse(REQUEST*);
 extern int SendResponse(SOCKET, RESPONSE*);
 extern const char* request2str(const int*);
+extern void teeNflog(char const*, ...);
 
 #endif // SERVER_H

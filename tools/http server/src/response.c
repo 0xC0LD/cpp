@@ -74,6 +74,7 @@ int SendDefHeader(SOCKET sock, int code) {
 		case 500: ret = send(sock, DEFAULT_ERROR_500, strlen(DEFAULT_ERROR_500), 0); break;
 	}
 	tee("%d", code);
+	flog(">> RET CODE..: %d\n", code);
 	
 	return ret;
 }
@@ -100,6 +101,7 @@ int SendResponse(SOCKET sock, RESPONSE* response) {
 	int s = send(sock, header, strlen(header), 0);
 	if (s == SOCKET_ERROR) { return s; }
 	tee("200");
+	flog(">> RET CODE..: 200\n");
 	
 	// send data (file)
 	char buf[1024] = {0};
@@ -109,11 +111,13 @@ int SendResponse(SOCKET sock, RESPONSE* response) {
 		if (msg_len == SOCKET_ERROR || msg_len == 0) {
 			fclose(f);
 			tee(" -- reset");
+			flog(">> RESET...\n");
 			return SOCKET_ERROR;
 		}
 	}
 	fclose(f);
 	
 	tee(" -> sent: '%s'", response->filepath);
+	flog(">> FILE SENT.: '%s'\n", response->filepath);
 	return 1;
 }

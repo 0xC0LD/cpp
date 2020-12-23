@@ -7,6 +7,7 @@
 #include "server.h"
 
 /* TODO:
+**   - make a better LOGGIN SYSTEM PLZ!!!!!!! (with date and time etc)
 **   - make custom 404 pages / and other error codes
 **   - multi-threading, thread pools, add other ports and stuff...
 **   - handle other requests (UNK, PUT, POST, etc.)
@@ -15,21 +16,28 @@
 */
 
 BOOL running = TRUE;
-#define RETRY_MS 800
+
+void log_bannerLine() {
+	for (int i = 0; i < 100; i++) {
+		flog("#");
+	}
+	flog("\n");
+}
 
 int main() {
 	
-	tee_init("server.log");
-	FILE* recvF = fopen("recv.log", "a");
+	tee_init("output.log");
+	flog_init("server.log");
 	
-	if (chdir("site")) { tee("[x]: cd 'site'"); return 1; }
+	if (chdir("site")) { teeNflog("[x]: cd 'site'"); return 1; }
 	
 	while (running) {
 		
 		WSADATA wsaData;
-		if (WSAStartup(MAKEWORD(2, 2), &wsaData) == SOCKET_ERROR) { tee("ERROR: WSAStartup() failed\n"); }
+		if (WSAStartup(MAKEWORD(2, 2), &wsaData) == SOCKET_ERROR) { teeNflog("[X] WSAStartup() failed\n"); }
 		
-		tee("[>] Server Begin.\n");
+		// get current date and time
+		teeNflog("[>] Server Begin.\n");
 		
 		while (running) {
 			
@@ -41,29 +49,57 @@ int main() {
 			struct sockaddr_in client_addr;
 			
 			SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-			if (sock == INVALID_SOCKET) { tee("ERROR: socket() failed\n"); continue; }
-			if (bind(sock, (struct sockaddr *)&local, sizeof(local)) == SOCKET_ERROR) { tee("ERROR: bind() failed\n");   closesocket(sock); Sleep(RETRY_MS); continue; }
-			if (listen(sock, SOMAXCONN) == SOCKET_ERROR)                              { tee("ERROR: listen() failed\n"); closesocket(sock); Sleep(RETRY_MS); continue; }
+			if (sock == INVALID_SOCKET) { tee("[X] socket() failed\n"); continue; }
+			if (bind(sock, (struct sockaddr *)&local, sizeof(local)) == SOCKET_ERROR) { teeNflog("[X] bind() failed\n"); closesocket(sock); continue; }
+			if (listen(sock, SOMAXCONN) == SOCKET_ERROR) { teeNflog("[X] listen() failed\n"); closesocket(sock); continue; }
+			
+			// set timeout to a second
+			DWORD timeout = 1000;
+			setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
 			
 			int count = 0;
 			while (running) {
 				int addr_len = sizeof(client_addr);
 				SOCKET msg_sock = accept(sock, (struct sockaddr*)&client_addr, &addr_len);
-				if (msg_sock == INVALID_SOCKET) { tee("ERROR: accept() failed\n"); break; }
+				if (msg_sock == INVALID_SOCKET) { teeNflog("[X] accept() failed\n"); break; }
 				
 				count++;
 				char* ip = inet_ntoa(client_addr.sin_addr);
 				u_short port = htons(client_addr.sin_port);
 				tee("# %d\t%s:%d", count, ip, port);
 				
-				REQUEST* request = GetRequest(msg_sock, recvF);
-				if (request == NULL) { tee("\n"); closesocket(msg_sock); continue; }
-				tee("%s '%s'", request2str(&request->type), request->value);
+				log_bannerLine();
+				flog(">> INDEX.....: %d\n", count);
+				flog(">> IP........: %s\n", ip);
+				flog(">> PORT......: %d\n", port);
+				
+				REQUEST* request = GetRequest(msg_sock);
+				if (request == NULL) {
+					tee("\n");
+					flog(">> REQUEST...: NULL\n");
+					log_bannerLine();
+					closesocket(msg_sock);
+					continue;
+				}
+				const char* req = request2str(&request->type);
+				const char* val = request->value;
+				
+				tee("%s '%s'", req, val);
+				flog(">> REQUEST...: %s\n", req);
+				flog(">> VALUE.....: %s\n", val);
+				
 				
 				RESPONSE* response = GetResponse(request);
-				if (response == NULL) { tee("\n"); closesocket(msg_sock); continue; }
+				if (response == NULL) {
+					tee("\n");
+					flog(">> RESPONSE..: NULL\n");
+					log_bannerLine();
+					closesocket(msg_sock);
+					continue;
+				}
 				int r = SendResponse(msg_sock, response);
 				tee("\n");
+				log_bannerLine();
 				
 				// clean up
 				free(request->value);
@@ -82,6 +118,6 @@ int main() {
 	}
 	
 	tee_shutdown();
-	fclose(recvF);
+	flog_shutdown();
 	
 }
