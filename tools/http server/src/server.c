@@ -7,7 +7,7 @@
 #include "server.h"
 
 /* TODO:
-**   - make a better LOGGIN SYSTEM PLZ!!!!!!! (with date and time etc)
+**   - add time/date in logging system
 **   - make custom 404 pages / and other error codes
 **   - multi-threading, thread pools, add other ports and stuff...
 **   - handle other requests (UNK, PUT, POST, etc.)
@@ -53,8 +53,8 @@ int main() {
 			if (bind(sock, (struct sockaddr *)&local, sizeof(local)) == SOCKET_ERROR) { teeNflog("[X] bind() failed\n"); closesocket(sock); continue; }
 			if (listen(sock, SOMAXCONN) == SOCKET_ERROR) { teeNflog("[X] listen() failed\n"); closesocket(sock); continue; }
 			
-			// set timeout to a second
-			DWORD timeout = 1000;
+			// set timeout
+			DWORD timeout = SERVER_RECV_TIMEOUT; // 4min timeout
 			setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
 			
 			int count = 0;

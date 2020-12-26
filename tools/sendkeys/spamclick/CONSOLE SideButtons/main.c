@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#define SPAM_DELAY 3
+int SPAM_DELAY = 3;
 
 int gl_status1 = 0;
 int gl_status2 = 0;
@@ -42,8 +42,15 @@ DWORD WINAPI SpamThread() {
 	return 0;
 }
 
-int main() {
+int main(int argc, char** argv) {
     
+	if (argc == 1) {
+		fprintf(stderr, "USAGE: %s <delay>\n", argv[0]);
+		return 1;
+	}
+	
+	SPAM_DELAY = atoi(argv[1]);
+	
 	// hook
 	if (!(mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookCallback, NULL, 0))) { fprintf(stderr, "ERROR: failed to install mouse hook\n"); }
 	

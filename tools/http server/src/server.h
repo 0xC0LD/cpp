@@ -17,6 +17,7 @@ typedef struct {
 
 #define REQUEST_SIZE 4096
 #define DEFAULT_PORT 80
+#define SERVER_RECV_TIMEOUT 240000 //4min
 
 // logging system
 #include "tee.h"
