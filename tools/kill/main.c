@@ -5,9 +5,7 @@
 #include <shlwapi.h>
 
 BOOL TerminateProcessEx(DWORD dwProcessId, UINT uExitCode) {
-	DWORD dwDesiredAccess = PROCESS_TERMINATE;
-	BOOL  bInheritHandle  = FALSE;
-	HANDLE hProcess = OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
+	HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, dwProcessId);
 	if (hProcess == NULL) { return FALSE; }
 	BOOL result = TerminateProcess(hProcess, uExitCode);
 	CloseHandle(hProcess);
