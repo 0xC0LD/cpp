@@ -4,7 +4,7 @@
 ```
 argv2stdout    - print out args
 binstr2bmp     - draw a binary string in an image with black and white pixels
-clear ram      - malloc 0 memory the hole ram (eat the ram)
+clear ram      - malloc 0 memory the whole ram (eat the ram)
 clipboard      - print clipboard (ascii text only)
 cry            - cesar cypher encoder (string, file)
 dpc            - change the desktop background picture
