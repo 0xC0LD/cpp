@@ -73,7 +73,7 @@ void code(node_t* head) {
 			for (size_t i = 0; i < l; i++) {
 				printf("HIDE_LETTER('%c'), ", current->val2[i]);
 			}
-			printf(" '\\0' };\n");
+			printf("'\\0' };\n");
 		}
 		current = current->next;
 	}
