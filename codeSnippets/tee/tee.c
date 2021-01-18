@@ -8,15 +8,15 @@ FILE* tee_init(const char* file) {
 }
 int tee_shutdown() { return fclose(tee_file); }
 FILE* tee_getFile() { return tee_file; }
-void tee(const char* fmt, ...) { 
+void tee(char const* fmt, ...) { 
     va_list ap;
     va_start(ap, fmt);
     vprintf(fmt, ap);
     va_end(ap);
     va_start(ap, fmt);
     vfprintf(tee_file, fmt, ap);
-    va_end(ap);
 	fflush(tee_file);
+    va_end(ap);
 }
 
 static FILE* flog_file = NULL;
@@ -26,23 +26,11 @@ FILE* flog_init(const char* file) {
 }
 int flog_shutdown() { return fclose(flog_file); }
 FILE* flog_getFile() { return tee_file; }
-void flog(const char* fmt, ...) { 
+void flog(char const* fmt, ...) { 
     va_list ap;
     va_start(ap, fmt);
     vfprintf(flog_file, fmt, ap);
-    va_end(ap);
 	fflush(flog_file);
+    va_end(ap);
 }
 
-void teeNflog(const char* fmt, ...) { 
-    va_list ap;
-    va_start(ap, fmt);
-    vprintf(fmt, ap);
-    va_end(ap);
-    va_start(ap, fmt);
-    vfprintf(tee_file, fmt, ap);
-	fflush(tee_file);
-	vfprintf(flog_file, fmt, ap);
-	fflush(flog_file);
-    va_end(ap);
-}

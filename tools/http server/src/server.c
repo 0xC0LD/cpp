@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 #include <winsock2.h>
 
 #include "server.h"
 
 /* TODO:
-**   - add time/date in logging system
+**   - add colors to logging system
 **   - make custom 404 pages / and other error codes
 **   - multi-threading, thread pools, add other ports and stuff...
 **   - handle other requests (UNK, PUT, POST, etc.)
@@ -26,6 +27,14 @@ void log_bannerLine() {
 
 #define LOG_IP 1 // log just the ips to another file
 
+char* getTimeStr() {
+	time_t now = time(0);
+	struct tm* sTm = gmtime(&now);
+	char timeStr[TINYSIZ] = {0};
+	strftime(timeStr, TINYSIZ, "%Y-%m-%d %H:%M:%S", sTm);
+	return strdup(timeStr);
+}
+
 int main() {
 	
 	tee_init("output.log");
@@ -43,7 +52,9 @@ int main() {
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) == SOCKET_ERROR) { teeNflog("[X] WSAStartup() failed\n"); }
 		
 		// get current date and time
-		teeNflog("[>] Server Begin.\n");
+		char* tt = getTimeStr();
+		teeNflog("%s | [>] Server Begin.\n", tt);
+		free(tt);
 		
 		while (running) {
 			
@@ -69,10 +80,18 @@ int main() {
 				SOCKET msg_sock = accept(sock, (struct sockaddr*)&client_addr, &addr_len);
 				if (msg_sock == INVALID_SOCKET) { teeNflog("[X] accept() failed\n"); break; }
 				
+				// get time
+				char* timeStr = getTimeStr();
+				
+				// count
 				count++;
+				
+				// get ip
 				char* ip = inet_ntoa(client_addr.sin_addr);
 				u_short port = htons(client_addr.sin_port);
-				tee("# %d\t%s:%d", count, ip, port);
+				
+				// print stuff
+				tee("%s | %d \t %s:%d", timeStr, count, ip, port);
 				
 				// log ip (no dupes)
 				#if LOG_IP
@@ -94,6 +113,7 @@ int main() {
 				
 				log_bannerLine();
 				flog(">> INDEX.....: %d\n", count);
+				flog(">> TIME......: %s\n", timeStr);
 				flog(">> IP........: %s\n", ip);
 				flog(">> PORT......: %d\n", port);
 				
@@ -126,6 +146,7 @@ int main() {
 				log_bannerLine();
 				
 				// clean up
+				free(timeStr);
 				free(request->value);
 				free(request);
 				free(response->filepath);

@@ -19,6 +19,7 @@ typedef struct {
 #define MIDSIZ    4096
 #define KSIZ      1024
 #define SMALLSIZ   256
+#define TINYSIZ     64
 
 #define REQUEST_SIZE 4096
 #define DEFAULT_PORT 80
@@ -31,6 +32,6 @@ extern REQUEST* GetRequest(SOCKET);
 extern RESPONSE* GetResponse(REQUEST*);
 extern int SendResponse(SOCKET, RESPONSE*);
 extern const char* request2str(const int*);
-extern void teeNflog(char const*, ...);
+
 
 #endif // SERVER_H

@@ -11,6 +11,4 @@ extern int flog_shutdown();
 extern void flog(char const*, ...);
 extern FILE* flog_getFile();
 
-extern void teeNflog(const char*, ...);
-
 #endif
