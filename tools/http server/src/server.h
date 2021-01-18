@@ -15,6 +15,11 @@ typedef struct {
 	char* filepath;
 } RESPONSE;
 
+#define BIGSIZ    8192
+#define MIDSIZ    4096
+#define KSIZ      1024
+#define SMALLSIZ   256
+
 #define REQUEST_SIZE 4096
 #define DEFAULT_PORT 80
 #define SERVER_RECV_TIMEOUT 240000 //4min

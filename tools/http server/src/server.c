@@ -24,10 +24,16 @@ void log_bannerLine() {
 	flog("\n");
 }
 
+#define LOG_IP 1 // log just the ips to another file
+
 int main() {
 	
 	tee_init("output.log");
 	flog_init("server.log");
+	
+	#if LOG_IP
+	FILE* log_ip = fopen("clients.log", "a+");
+	#endif
 	
 	if (chdir("site")) { teeNflog("[x]: cd 'site'"); return 1; }
 	
@@ -67,6 +73,24 @@ int main() {
 				char* ip = inet_ntoa(client_addr.sin_addr);
 				u_short port = htons(client_addr.sin_port);
 				tee("# %d\t%s:%d", count, ip, port);
+				
+				// log ip (no dupes)
+				#if LOG_IP
+				if (log_ip) {
+					fseek(log_ip, 0, SEEK_SET);
+					int g = 0;
+					char buffer[SMALLSIZ];
+					while (fgets(buffer, SMALLSIZ-1, log_ip)) {
+						buffer[strcspn(buffer, "\n")] = 0; // remove newline
+						if (!strcmp(buffer, ip)) { g = 1; break; }
+					}
+					if (!g) {
+						fseek(log_ip, 0, SEEK_END);
+						fprintf(log_ip, "%s\n", ip);
+						fflush(log_ip);
+					}
+				}
+				#endif
 				
 				log_bannerLine();
 				flog(">> INDEX.....: %d\n", count);

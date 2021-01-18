@@ -15,8 +15,8 @@ void tee(char const* fmt, ...) {
     va_end(ap);
     va_start(ap, fmt);
     vfprintf(tee_file, fmt, ap);
-	fflush(tee_file);
     va_end(ap);
+	fflush(tee_file);
 }
 
 static FILE* flog_file = NULL;
@@ -30,7 +30,7 @@ void flog(char const* fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
     vfprintf(flog_file, fmt, ap);
-	fflush(flog_file);
     va_end(ap);
+	fflush(flog_file);
 }
 
