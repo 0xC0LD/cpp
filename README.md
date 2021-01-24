@@ -17,6 +17,7 @@ listproc       - list all process and ids
 playwav        - play a wav file
 ss/screenshot  - take a screenshot and save it as a bitmap in %CD%
 sendrecv       - send/receive file to an IP port (both will connect - client side)
+str/strings    - find printable strings in a binary file
 sudo           - (admin cmd) a command prompt that asks for admin privileges on start
 utc/UTCtime    - print Unix epoch time int
 writemem       - write an int to a process' memory
