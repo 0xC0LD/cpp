@@ -4,16 +4,11 @@
 enum REQUEST_TYPES { RT_UNK, RT_GET, RT_HEAD, RT_POST, RT_PUT, RT_DELETE, RT_CONNECT, RT_OPTIONS, RT_TRACE, RT_PATCH };
 
 typedef struct {
-    int  type;
+	int buff_len;
+    int type;
     char* value;
-    int length;
+	char* data;
 } REQUEST;
-
-typedef struct {
-	int  error;
-    char* filename;
-	char* filepath;
-} RESPONSE;
 
 #define BIGSIZ    8192
 #define MIDSIZ    4096
@@ -25,13 +20,15 @@ typedef struct {
 #define DEFAULT_PORT 80
 #define SERVER_RECV_TIMEOUT 240000 //4min
 
+#define EDIT_FOLDER "edit"
+
 // logging system
 #include "tee.h"
 
 extern REQUEST* GetRequest(SOCKET);
-extern RESPONSE* GetResponse(REQUEST*);
-extern int SendResponse(SOCKET, RESPONSE*);
+extern int Respond(SOCKET, REQUEST*);
 extern const char* request2str(const int*);
 
+#include "debug.h"
 
 #endif // SERVER_H

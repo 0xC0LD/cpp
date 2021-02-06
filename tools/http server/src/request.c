@@ -2,17 +2,23 @@
 #include <winsock2.h>
 #include "server.h"
 
-/*
-GET     - The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
-HEAD    - The HEAD method asks for a response identical to that of a GET request, but without the response body.
-POST    - The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
-PUT     - The PUT method replaces all current representations of the target resource with the request payload.
-DELETE  - The DELETE method deletes the specified resource.
-CONNECT - The CONNECT method establishes a tunnel to the server identified by the target resource.
-OPTIONS - The OPTIONS method is used to describe the communication options for the target resource.
-TRACE   - The TRACE method performs a message loop-back test along the path to the target resource.
-PATCH   - The PATCH method is used to apply partial modifications to a resource. 
-*/
+int get_1n2(const char* buff, char* str1, char* str2) {
+	int sawSpace = 0;
+	int i1 = 0;
+	int i2 = 0;
+	for (size_t i = 0; i < strlen(buff); i++) {
+		if (!sawSpace && buff[i] == ' ') { sawSpace = 1; continue; }
+		if (sawSpace) {
+			str2[i2] = buff[i];
+			i2++;
+		}
+		else {
+			str1[i1] = buff[i];
+			i1++;
+		}
+	}
+	return 1;
+}
 
 const char* request2str(const int* val) {
 	switch (*val) {
@@ -42,44 +48,68 @@ REQUEST* GetRequest(SOCKET sock) {
 	}
 	
 	// log it
+	int c = 0;
 	char buf2[REQUEST_SIZE] = {0};
-	int s = 0;
 	for (int i = 0; i < REQUEST_SIZE; i++) {
 		if (buf[i] == '\r') { continue; }
-		buf2[s] = buf[i];
-		s++;
+		buf2[c++] = buf[i];
 	}
 	flog("%s", buf2);
-	// FILE* f = flog_getFile();
-	// fwrite(buf2, msg_len, 1, f);
-	// fflush(f);
 	
 	// make req
 	REQUEST* request = malloc(sizeof(REQUEST));
-	request->length = msg_len;
+	request->buff_len = msg_len;
+	request->type = RT_UNK;
+	request->value = NULL;
+	request->data = NULL;
 	
 	// get request
 	#define REQBUFFSIZ 10
-	char str1[REQBUFFSIZ];
-	char str2[MAX_PATH];
-	char format[32];
+	char str1[REQBUFFSIZ] = {0};
+	char str2[MAX_PATH] = {0};
+	char format[32] = {0};
 	sprintf(format, "%%%ds %%%ds", REQBUFFSIZ-1, MAX_PATH-1);
 	sscanf(buf, format, str1, str2);
-	if (str2[strlen(str2)-1] == '/') { strcat(str2, "index.html"); }
+	//if (str2[strlen(str2)-1] == '/') { strcat(str2, "index.html"); }
 	
-	enum REQUEST_TYPES type = RT_UNK;
-	if      (!strcmp(str1, "GET"))     { type = RT_GET;     }
-	else if (!strcmp(str1, "HEAD"))    { type = RT_HEAD;    }
-	else if (!strcmp(str1, "POST"))    { type = RT_POST;    }
-	else if (!strcmp(str1, "PUT"))     { type = RT_PUT;     }
-	else if (!strcmp(str1, "DELETE"))  { type = RT_DELETE;  }
-	else if (!strcmp(str1, "CONNECT")) { type = RT_CONNECT; }
-	else if (!strcmp(str1, "OPTIONS")) { type = RT_OPTIONS; }
-	else if (!strcmp(str1, "TRACE"))   { type = RT_TRACE;   }
-	else if (!strcmp(str1, "PATCH"))   { type = RT_PATCH;   }
+	if      (!strcmp(str1, "GET"))     { request->type = RT_GET;     }
+	else if (!strcmp(str1, "HEAD"))    { request->type = RT_HEAD;    }
+	else if (!strcmp(str1, "POST"))    { request->type = RT_POST;    }
+	else if (!strcmp(str1, "PUT"))     { request->type = RT_PUT;     }
+	else if (!strcmp(str1, "DELETE"))  { request->type = RT_DELETE;  }
+	else if (!strcmp(str1, "CONNECT")) { request->type = RT_CONNECT; }
+	else if (!strcmp(str1, "OPTIONS")) { request->type = RT_OPTIONS; }
+	else if (!strcmp(str1, "TRACE"))   { request->type = RT_TRACE;   }
+	else if (!strcmp(str1, "PATCH"))   { request->type = RT_PATCH;   }
 	
-	request->type   = type;
-	request->value  = strdup(str2);
+	request->value = strdup(str2);
+	
+	// get end of line data
+	char* end = strstr(buf, "\r\n\r\n");
+	if (end != NULL) {
+		end += 4;
+		request->data = strdup(end);
+	}
+	
+
+	/*
+	/// TODO: set all the request stuff (user-agent, content-len, etc.)
+	char line[REQUEST_SIZE] = {0};
+	int g = 0;
+	for (int i = 0; i < REQUEST_SIZE; i++) {
+		if (buf[i] == '\n') {
+			char s1[REQUEST_SIZE] = {0};
+			char s2[REQUEST_SIZE] = {0};
+			get_1n2(line, s1, s2);
+			if (!strcmp(s1, "Data:")) { request->data = strdup(s2); }
+			
+			g = 0;
+			memset(line, 0, REQUEST_SIZE);
+			continue;
+		}
+		line[g++] = buf[i];
+	}
+	*/
 	
 	return request;
 }

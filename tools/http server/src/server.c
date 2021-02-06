@@ -46,6 +46,9 @@ int main() {
 	
 	if (chdir("site")) { teeNflog("[x]: cd 'site'"); return 1; }
 	
+	// create a dir for files that can be posted / edited
+	CreateDirectory(EDIT_FOLDER, NULL);
+	
 	while (running) {
 		
 		WSADATA wsaData;
@@ -133,27 +136,23 @@ int main() {
 				flog(">> VALUE.....: %s\n", val);
 				
 				
-				RESPONSE* response = GetResponse(request);
-				if (response == NULL) {
+				int ret = Respond(msg_sock, request);
+				if (!ret) {
 					tee("\n");
 					flog(">> RESPONSE..: NULL\n");
 					log_bannerLine();
 					closesocket(msg_sock);
 					continue;
 				}
-				int r = SendResponse(msg_sock, response);
 				tee("\n");
 				log_bannerLine();
 				
 				// clean up
 				free(timeStr);
 				free(request->value);
+				free(request->data);
 				free(request);
-				free(response->filepath);
-				free(response);
 				closesocket(msg_sock);
-				
-				if (r == SOCKET_ERROR) { break; }
 			}
 			
 			closesocket(sock);
