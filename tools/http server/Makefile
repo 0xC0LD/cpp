@@ -1,5 +1,4 @@
-CC     = i686-w64-mingw32-gcc
-CC64   = x86_64-w64-mingw32-gcc
+CC     = gcc
 CFLAGS = -Wall -Werror -Wextra -static -Os -s
 LIBS   = -lws2_32 -lshlwapi
 EXE    = http-server

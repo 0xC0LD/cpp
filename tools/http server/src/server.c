@@ -7,14 +7,6 @@
 
 #include "server.h"
 
-/* TODO:
-**   - add colors to logging system
-**   - make custom 404 pages / and other error codes
-**   - multi-threading, thread pools, add other ports and stuff...
-**   - handle other requests (UNK, PUT, POST, etc.)
-**   - Message body information 
-**   - use SSL (HTTPS)
-*/
 
 BOOL running = TRUE;
 
@@ -27,6 +19,8 @@ void log_bannerLine() {
 
 #define LOG_IP 1 // log just the ips to another file
 
+
+#if LOG_IP
 char* getTimeStr() {
 	time_t now = time(0);
 	struct tm* sTm = gmtime(&now);
@@ -34,31 +28,38 @@ char* getTimeStr() {
 	strftime(timeStr, TINYSIZ, "%Y-%m-%d %H:%M:%S", sTm);
 	return strdup(timeStr);
 }
+#endif
 
 int main() {
 	
+	// open files for logging
 	tee_init("output.log");
 	flog_init("server.log");
 	
-	#if LOG_IP
+
+	#if LOG_IP // if log ip is on also make a file to log ips
 	FILE* log_ip = fopen("clients.log", "a+");
 	#endif
 	
+	// change working direcotory to "site" foldeer to easily access files
 	if (chdir("site")) { teeNflog("[x]: cd 'site'"); return 1; }
 	
 	// create a dir for files that can be posted / edited
 	CreateDirectory(EDIT_FOLDER, NULL);
 	
+	// main while loop
 	while (running) {
 		
+		// initialize winsock
 		WSADATA wsaData;
-		if (WSAStartup(MAKEWORD(2, 2), &wsaData) == SOCKET_ERROR) { teeNflog("[X] WSAStartup() failed\n"); }
+		if (WSAStartup(MAKEWORD(2, 2), &wsaData)) { teeNflog("[X] WSAStartup() failed\n"); }
 		
 		// get current date and time
 		char* tt = getTimeStr();
 		teeNflog("%s | [>] Server Begin.\n", tt);
 		free(tt);
 		
+		// client accept loop 
 		while (running) {
 			
 			// Fill in the address structure
@@ -68,13 +69,14 @@ int main() {
 			local.sin_port        = htons(DEFAULT_PORT);
 			struct sockaddr_in client_addr;
 			
+			// create socket / bind socket / and start listening...
 			SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 			if (sock == INVALID_SOCKET) { tee("[X] socket() failed\n"); continue; }
 			if (bind(sock, (struct sockaddr *)&local, sizeof(local)) == SOCKET_ERROR) { teeNflog("[X] bind() failed\n"); closesocket(sock); continue; }
 			if (listen(sock, SOMAXCONN) == SOCKET_ERROR) { teeNflog("[X] listen() failed\n"); closesocket(sock); continue; }
 			
 			// set timeout
-			DWORD timeout = SERVER_RECV_TIMEOUT; // 4min timeout
+			DWORD timeout = SERVER_RECV_TIMEOUT; // set 4 min receive timeout
 			setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
 			
 			int count = 0;
@@ -83,13 +85,10 @@ int main() {
 				SOCKET msg_sock = accept(sock, (struct sockaddr*)&client_addr, &addr_len);
 				if (msg_sock == INVALID_SOCKET) { teeNflog("[X] accept() failed\n"); break; }
 				
-				// get time
-				char* timeStr = getTimeStr();
+				char* timeStr = getTimeStr(); // get time
+				count++; // count up
 				
-				// count
-				count++;
-				
-				// get ip
+				// get client ip and port
 				char* ip = inet_ntoa(client_addr.sin_addr);
 				u_short port = htons(client_addr.sin_port);
 				
@@ -158,9 +157,11 @@ int main() {
 			closesocket(sock);
 		}
 		
+		// shutdown winsock
 		WSACleanup();
 	}
 	
+	// close all logging files
 	tee_shutdown();
 	flog_shutdown();
 	

@@ -8,14 +8,8 @@ int get_1n2(const char* buff, char* str1, char* str2) {
 	int i2 = 0;
 	for (size_t i = 0; i < strlen(buff); i++) {
 		if (!sawSpace && buff[i] == ' ') { sawSpace = 1; continue; }
-		if (sawSpace) {
-			str2[i2] = buff[i];
-			i2++;
-		}
-		else {
-			str1[i1] = buff[i];
-			i1++;
-		}
+		if (sawSpace) { str2[i2] = buff[i]; i2++; }
+		else          { str1[i1] = buff[i]; i1++; }
 	}
 	return 1;
 }
@@ -90,26 +84,6 @@ REQUEST* GetRequest(SOCKET sock) {
 		end += 4;
 		request->data = strdup(end);
 	}
-	
-
-	/*
-	/// TODO: set all the request stuff (user-agent, content-len, etc.)
-	char line[REQUEST_SIZE] = {0};
-	int g = 0;
-	for (int i = 0; i < REQUEST_SIZE; i++) {
-		if (buf[i] == '\n') {
-			char s1[REQUEST_SIZE] = {0};
-			char s2[REQUEST_SIZE] = {0};
-			get_1n2(line, s1, s2);
-			if (!strcmp(s1, "Data:")) { request->data = strdup(s2); }
-			
-			g = 0;
-			memset(line, 0, REQUEST_SIZE);
-			continue;
-		}
-		line[g++] = buf[i];
-	}
-	*/
 	
 	return request;
 }
